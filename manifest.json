@@ -1,0 +1,17 @@
+{
+  "name": "のりくんの音楽ひろば",
+  "short_name": "音楽ひろば",
+  "description": "のりくんが Google Flow Music でつくった曲を置いているページ。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#D6E7F8",
+  "theme_color": "#16537F",
+  "lang": "ja",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
