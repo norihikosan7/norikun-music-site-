@@ -37,7 +37,7 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 .wrap{width:min(880px,92vw);margin:0 auto}
-
+ 
 /* ---------- 見出し ---------- */
 header{padding:calc(68px + env(safe-area-inset-top)) 0 2px}
 h1{
@@ -70,7 +70,7 @@ h1 .heart{
 .lede a{color:var(--blue);font-size:16px}
 .lede strong{font-weight:800;color:var(--blue)}
 .notice{color:#A81C25;font-weight:700}
-
+ 
 /* ---------- プレイヤー ---------- */
 .player{
   position:sticky;top:0;z-index:20;
@@ -85,7 +85,7 @@ canvas#wave{
   width:100%;height:48px;display:block;
   border-radius:2px;background:var(--ink2);
 }
-
+ 
 .np-title{font-family:var(--mincho);font-size:25px;font-weight:700;letter-spacing:.03em;line-height:1.35}
 .np-title .sub{font-family:var(--gothic);font-size:15px;color:var(--mist);font-weight:500;margin-left:.6em}
 .np-msg{color:var(--salt);font-size:13px;min-height:1.2em}
@@ -183,20 +183,6 @@ input[type=range]:focus-visible{outline:1px solid var(--blue);outline-offset:3px
   .tbtn{width:32px;height:23px;border-radius:12px}
   .tbtn svg{width:13px;height:13px}
 }
-/* のべ来訪者の数（再生ボタンの右下） */
-.hits{
-  margin-left:auto;display:inline-flex;align-items:center;gap:6px;
-  font-size:12px;font-weight:700;color:var(--blue-deep);
-  font-variant-numeric:tabular-nums;white-space:nowrap;
-}
-.hits svg{
-  width:15px;height:15px;flex:0 0 auto;fill:none;stroke:currentColor;
-  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
-}
-.hits b{font-size:13.5px;font-weight:800;color:var(--blue)}
-@media(max-width:560px){
-  .hits{margin-left:0;width:100%;justify-content:flex-end}
-}
 .modes{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .mbtn{
   display:inline-flex;align-items:center;gap:7px;
@@ -214,7 +200,7 @@ input[type=range]:focus-visible{outline:1px solid var(--blue);outline-offset:3px
 .mbtn.icon svg{width:20px;height:20px}
 .mbtn:disabled{opacity:.55;cursor:default}
 .mbtn:disabled:hover{border-color:#5D86AA;color:var(--paper)}
-
+ 
 /* イコライザー（音と見え方）を選ぶプルダウン */
 .srow{display:flex;align-items:center;gap:5px;margin:7px 0 13px}
 .srow .slab{
@@ -240,6 +226,17 @@ input[type=range]:focus-visible{outline:1px solid var(--blue);outline-offset:3px
 .modes .sel-btn{min-width:132px}
 .modes .sel-btn[aria-expanded="true"]{background:var(--blue);color:var(--ink);border-color:var(--blue)}
 .modes .sel-btn .sel-chev{width:14px;height:14px;margin-left:8px}
+/* お気に入りの数（再生ボタンの下、右側） */
+.favcount{
+  margin-left:auto;display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:700;color:var(--blue-deep);
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.favcount svg{width:14px;height:14px;flex:0 0 auto;fill:#D2405F}
+.favcount b{font-size:13.5px;font-weight:800;color:var(--blue);margin:0 1px}
+@media(max-width:560px){
+  .favcount{margin-left:0;width:100%;justify-content:flex-end}
+}
 .sel-list{
   position:absolute;z-index:40;top:calc(100% + 4px);left:0;min-width:100%;
   margin:0;padding:4px;list-style:none;
@@ -261,7 +258,7 @@ input[type=range]:focus-visible{outline:1px solid var(--blue);outline-offset:3px
 }
 @media(max-width:560px){
 }
-
+ 
 /* ---------- セクション見出し（押すと開け閉めできる） ---------- */
 .sec-head{
   margin:34px 0 0;border-bottom:2.5px solid var(--blue);
@@ -286,7 +283,7 @@ input[type=range]:focus-visible{outline:1px solid var(--blue);outline-offset:3px
   transition:transform .3s ease;
 }
 .sec-toggle[aria-expanded="true"] .chev{transform:rotate(180deg)}
-
+ 
 /* 中身（曲のリスト）を上下にすべらせて開け閉めする */
 .sec-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
 .sec-body.open{grid-template-rows:1fr}
@@ -305,7 +302,7 @@ input[type=range]:focus-visible{outline:1px solid var(--blue);outline-offset:3px
 .videobox video{max-width:100%;max-height:70vh;display:block;margin:0 auto}
 .videobox .cap{margin:8px 0 0;font-size:13px;color:var(--mist)}
 .videobox .cap b{font-family:var(--mincho);font-size:16px;font-weight:600;color:var(--paper);margin-right:.6em}
-
+ 
 /* ---------- トラックリスト ---------- */
 .tracks{list-style:none;margin:0;padding:0 0 8px}
 .tracks li{border-bottom:1px solid var(--line);position:relative}
@@ -337,7 +334,7 @@ li.on .track{padding-left:12px}
 li.on .t-no{color:var(--blue);font-weight:700}
 li.on .t-title{color:var(--blue);font-weight:800}
 li.on .t-sub,li.on .t-time{color:var(--blue-deep);font-weight:600}
-
+ 
 /* ---------- 右上の支援ボタン ---------- */
 .support{
   --indigo:#303F9F;
@@ -351,7 +348,7 @@ li.on .t-sub,li.on .t-time{color:var(--blue-deep);font-weight:600}
 @media(max-width:520px){
   .support{padding:7px 12px;font-size:12.5px;letter-spacing:0}
 }
-
+ 
 footer{
   margin-top:52px;padding:26px 0 calc(60px + env(safe-area-inset-bottom));border-top:1px solid var(--line);
   color:var(--paper);font-size:14px;font-weight:500;
@@ -366,7 +363,7 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
 </style>
 </head>
 <body>
-
+ 
 <div class="wrap">
   <header>
     <h1><span class="ln">のりくんの音楽ひろば<span class="heart">💛</span></span></h1>
@@ -379,7 +376,7 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
     <p class="lede">こちらもよろしくお願いします。→<a href="https://www.flowmusic.app/Norikun" target="_blank" rel="noopener">のりくんの Flow Music ページ</a>へ</p>
   </header>
 </div>
-
+ 
 <!-- プレイヤー -->
 <div class="player">
   <div class="wrap player-inner">
@@ -416,14 +413,14 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
         <button type="button" class="mbtn mode sel-btn" id="wBtn" aria-haspopup="listbox" aria-expanded="false"></button>
         <ul class="sel-list" id="wList" role="listbox" aria-label="再生方法" aria-multiselectable="true" hidden></ul>
       </div>
-      <span class="hits" id="hits" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 20.5v-1.8a3.7 3.7 0 0 0-3.7-3.7H6.2a3.7 3.7 0 0 0-3.7 3.7v1.8"/><circle cx="9.5" cy="7.5" r="3.9"/><path d="M21.5 20.5v-1.8a3.7 3.7 0 0 0-2.8-3.58"/><path d="M15.8 3.72a3.7 3.7 0 0 1 0 7.16"/></svg>のべ来訪 <b id="hitsN">–</b></span>
+      <span class="favcount" id="favCount" hidden></span>
     </div>
   </div>
 </div>
-
+ 
 <div class="wrap">
   <div id="tracks"></div>
-
+ 
   <footer>
     <nav class="sitelinks">
       <a href="https://sites.google.com/view/nori-hobby-happy-hp/%E3%83%9B%E3%83%BC%E3%83%A0" target="_blank" rel="noopener">のりくんのホームページ：nori-hobby-happy-hp</a>
@@ -434,10 +431,10 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
     <p class="by">made with <span class="heart">♥</span> by norikun</p>
   </footer>
 </div>
-
+ 
 <audio id="audio" preload="none"></audio>
 <script src="wavedata.js"></script>
-
+ 
 <script>
 /* ===================================================================
    ★ここに曲を1曲ずつ足していきます★
@@ -454,7 +451,7 @@ const VIDEOS = [
   { title:"赤い軌跡", sub:"Red Line",          file:"akai-kiseki-red-line.mp4",      time:"0:46", tags:"横型" },
   { title:"Prism Dune", sub:"",                file:"prism-dune.mp4",                time:"0:32", tags:"縦型" }
 ];
-
+ 
 const SECTIONS = [
   {
     label: "洋楽",
@@ -523,13 +520,13 @@ const SECTIONS = [
     ]
   }
 ];
-
+ 
 /* iPhone/iPadでは、画面を消すと音の解析装置ごと止められる。
    解析を使わなければ音は鳴り続けるので、iOSでは解析を切る。
    ロック画面のボタンの出し分けにも使う。 */
 const IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
                (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-
+ 
 const audio   = document.getElementById("audio");
 const listEl  = document.getElementById("tracks");
 const npTitle = document.getElementById("npTitle");
@@ -538,9 +535,9 @@ const playBtn = document.getElementById("playBtn");
 const seek    = document.getElementById("seek");
 const tNow    = document.getElementById("tNow");
 const tEnd    = document.getElementById("tEnd");
-
+ 
 let current = -1;
-
+ 
 /* セクション見出しの星（色はグラデーション） */
 const STAR_COLORS = {
   s0: ["#6FE09B","#2FA556","#0D6635"],   // 洋楽：緑
@@ -559,7 +556,7 @@ function starSVG(key){
       d="M12 1.9 15.1 8.6 22.4 9.4 16.9 14.4 18.5 21.6 12 17.9 5.5 21.6 7.1 14.4 1.6 9.4 8.9 8.6Z"/>
   </svg>`;
 }
-
+ 
 /* --- お気に入り --- */
 const FAV_KEY = "norikun_music_favs";
 let favs = new Set();
@@ -568,12 +565,12 @@ function saveFavs(){
   try{ localStorage.setItem(FAV_KEY, JSON.stringify([...favs])); }catch(e){}
 }
 const HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.2 12.5a4.8 4.8 0 0 1 6.8-6.8l1 1 1-1a4.8 4.8 0 0 1 6.8 6.8z"/></svg>';
-
+ 
 /* --- リストを組み立てる --- */
 const FLAT = [];
 const ROWS = [];
 const RANGES = [];
-
+ 
 /* --- 見出しを押すと中身が開く仕組み --- */
 const CHEV = `<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>`;
 function makePanel(label, starId, count){
@@ -602,14 +599,14 @@ function setOpen(panel, on){
   panel.toggle.setAttribute("aria-expanded", on ? "true" : "false");
   panel.body.classList.toggle("open", on);
 }
-
+ 
 SECTIONS.forEach((sec, si) => {
   const secStart = FLAT.length;
   const panel = makePanel(sec.label, "s"+si, sec.tracks.length + "曲");
-
+ 
   const ul = document.createElement("ul");
   ul.className = "tracks";
-
+ 
   sec.tracks.forEach((t, n) => {
     const index = FLAT.length;
     FLAT.push(t);
@@ -623,7 +620,7 @@ SECTIONS.forEach((sec, si) => {
         <span class="t-time">${t.time}</span>
       </button>`;
     li.querySelector("button").addEventListener("click", () => { clearQueue(); load(index, true); });
-
+ 
     const fav = document.createElement("button");
     fav.className = "fav";
     fav.innerHTML = HEART;
@@ -635,26 +632,27 @@ SECTIONS.forEach((sec, si) => {
       if(favs.has(t.file)) favs.delete(t.file); else favs.add(t.file);
       fav.setAttribute("aria-pressed", favs.has(t.file) ? "true" : "false");
       saveFavs();
+      updateFavCount();
     });
     li.appendChild(fav);
     ul.appendChild(li);
     ROWS.push(li);
   });
-
+ 
   panel.inner.appendChild(ul);
   RANGES.push({start:secStart, len:sec.tracks.length, panel});
 });
-
+ 
 /* --- ミュージックビデオ --- */
 const vPanel = makePanel("ミュージックビデオ", "sv", VIDEOS.length + "本");
-
+ 
 const vBox = document.createElement("div");
 vBox.className = "videobox";
 vBox.innerHTML = `
   <div class="frame"><video id="video" controls playsinline preload="metadata"></video></div>
   <p class="cap" id="vcap"></p>`;
 vPanel.inner.appendChild(vBox);
-
+ 
 const vUl = document.createElement("ul");
 vUl.className = "tracks";
 VIDEOS.forEach((v, n) => {
@@ -671,11 +669,11 @@ VIDEOS.forEach((v, n) => {
   vUl.appendChild(li);
 });
 vPanel.inner.appendChild(vUl);
-
+ 
 const videoEl = vBox.querySelector("#video");
 const vCap = vBox.querySelector("#vcap");
 let vCurrent = -1;
-
+ 
 function playVideo(n){
   audio.pause();                       // 音楽と重ならないように止める
   clearQueue();
@@ -694,7 +692,7 @@ videoEl.addEventListener("error", () => {
   vCap.textContent = "動画ファイルが見つかりません。ファイル名を確認してください。";
 });
 audio.addEventListener("play", () => videoEl.pause());
-
+ 
 function mark(){
   ROWS.forEach((li,i)=>li.classList.toggle("on", i===current));
 }
@@ -745,12 +743,12 @@ function play(){
     }, 350);
   });
 }
-
+ 
 /* --- プルダウンの共通部分（イコライザーと再生の両方で使う） --- */
 const SCHEV = '<svg class="sel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
 const TICK  = '<svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12.5l5 5 10-11"/></svg>';
 const MENUS = [];
-
+ 
 /* 押すと開き、選ぶと onPick が呼ばれる。multi を付けると選んでも閉じない（複数選べる） */
 function bindMenu(btn, list, onPick, multi){
   function open(on){
@@ -807,18 +805,18 @@ function bindMenu(btn, list, onPick, multi){
   });
   return open;
 }
-
+ 
 /* --- 連続再生・再生方法 --- */
 const prevBtn  = document.getElementById("prevBtn");
 const nextBtn  = document.getElementById("nextBtn");
 const stopBtn  = document.getElementById("stopBtn");
 const qBtn = document.getElementById("qBtn"), qList = document.getElementById("qList");
 const wBtn = document.getElementById("wBtn"), wList = document.getElementById("wList");
-
+ 
 const SHUF_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>';
 const LOOP_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>';
 const FAV_ICON  = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 20.3 4.2 12.5a4.8 4.8 0 0 1 6.8-6.8l1 1 1-1a4.8 4.8 0 0 1 6.8 6.8z"/></svg>';
-
+ 
 const QITEMS = [{k:"all", name:"ALL（全曲）"}]
   .concat(SECTIONS.map((s, i) => ({ k:String(i), name:s.label })))
   .concat([{ k:"one", name:"1曲再生（連続再生しない）" }]);
@@ -831,10 +829,10 @@ qList.innerHTML = QITEMS.map(it =>
   `<li role="option" data-k="${it.k}" aria-selected="false"><span>${it.name}</span>${TICK}</li>`).join("");
 wList.innerHTML = WITEMS.map(it =>
   `<li role="option" data-k="${it.k}" aria-selected="false">${it.icon}<span>${it.name}</span>${TICK}</li>`).join("");
-
+ 
 let queueSec = null, queue = [], qpos = 0, oneShot = false;
 let shuffleOn = false, loopOn = false, favOnly = false;
-
+ 
 function shuffled(a){
   const b = a.slice();
   for(let i=b.length-1;i>0;i--){
@@ -860,7 +858,7 @@ function labelOf(key){
   return favOnly ? base + "のお気に入り" : base;
 }
 const NOFAV = "お気に入りがまだありません。曲名の右のハートを押して選んでください。";
-
+ 
 function updateModes(){
   const cur = queueSec === null ? (oneShot ? "one" : null) : String(queueSec);
   [...qList.children].forEach(li =>
@@ -870,7 +868,7 @@ function updateModes(){
              : "連続再生：" + labelOf(queueSec);
   qBtn.innerHTML = `<span>${name}</span>` + SCHEV;
   qBtn.classList.toggle("active", cur !== null);
-
+ 
   const on = { fav:favOnly, shuffle:shuffleOn, loop:loopOn };
   [...wList.children].forEach(li =>
     li.setAttribute("aria-selected", on[li.dataset.k] ? "true" : "false"));
@@ -912,7 +910,7 @@ function rebuildQueue(){
     load(queue[0], true);
   }
 }
-
+ 
 bindMenu(qBtn, qList, k => {
   if(k === "one"){                 // 連続再生をやめて、今の曲だけで終わりにする
     oneShot = true;
@@ -936,7 +934,7 @@ bindMenu(wBtn, wList, k => {
   updateModes();
 }, true);
 updateModes();
-
+ 
 /* 前後の曲へ。連続再生中はその並びの中で、そうでなければ全曲の並びで動く */
 function step(dir){
   if(current < 0) return;
@@ -947,7 +945,7 @@ function step(dir){
     load((current + dir + FLAT.length) % FLAT.length, true);
   }
 }
-
+ 
 /* --- スマホのロック画面から操作できるようにする --- */
 function updateMediaSession(t){
   if(!("mediaSession" in navigator)) return;
@@ -987,7 +985,7 @@ function setupMediaSession(){
   set("seekto",        d => { if(d && typeof d.seekTime === "number") audio.currentTime = d.seekTime; });
 }
 setupMediaSession();
-
+ 
 /* ロック画面に再生位置を伝える（イヤホンの早送り・巻き戻しにも使われる） */
 let lastPosSent = 0;
 function updatePositionState(){
@@ -1004,28 +1002,28 @@ function updatePositionState(){
 }
 audio.addEventListener("loadedmetadata", () => { updatePositionState(); showTime(); });
 audio.addEventListener("seeked", updatePositionState);
-
+ 
 /* 画面を戻したときに音が止まったままにならないようにする */
 document.addEventListener("visibilitychange", () => {
   if(audioCtx && audioCtx.state === "suspended" && !audio.paused){
     audioCtx.resume().catch(()=>{});
   }
 });
-
+ 
 prevBtn.addEventListener("click", () => { step(-1); prevBtn.blur(); });
 nextBtn.addEventListener("click", () => { step(1);  nextBtn.blur(); });
-
+ 
 function syncTransport(){
   const none = current < 0;
   prevBtn.disabled = none;
   nextBtn.disabled = none;
   stopBtn.disabled = none;
 }
-
+ 
 /* --- 再生ボタン：再生と一時停止のみ。停止は別のボタン --- */
 const ICON_PLAY  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.2v13.6L18.4 12z"/></svg>';
 const ICON_PAUSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.4" y="4.8" width="4.1" height="14.4" rx="1.3"/><rect x="13.5" y="4.8" width="4.1" height="14.4" rx="1.3"/></svg>';
-
+ 
 function setPlayIcon(){
   const playing = !audio.paused && current >= 0;
   playBtn.innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
@@ -1054,7 +1052,7 @@ audio.addEventListener("pause", () => {
   setPlayIcon(); syncTransport();
   if("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";
 });
-
+ 
 /* --- 時間の表示。右側を押すと「残り時間」に切り替わる --- */
 const RKEY = "norikun_music_remain";
 let showRemain = false;
@@ -1072,28 +1070,7 @@ tEnd.addEventListener("click", () => {
 });
 showTime();
 setPlayIcon();
-
-/* --- のべ来訪者の数 ---
-   無料のカウンター（abacus.jasoncameron.dev）に数を預けている。
-   同じタブで開き直したときは数えず、今の数だけを読む。
-   つながらないときは何も出さない。 */
-(function(){
-  const box = document.getElementById("hits"), num = document.getElementById("hitsN");
-  if(!box || !num || !window.fetch) return;
-  const NS = "norihikosan7.github.io", KEY = "norikun-music-site";
-  let first = true;
-  try{ first = !sessionStorage.getItem("norikun_music_seen"); }catch(e){}
-  fetch("https://abacus.jasoncameron.dev/" + (first ? "hit" : "get") + "/" + NS + "/" + KEY,
-        { cache:"no-store" })
-    .then(r => r.ok ? r.json() : Promise.reject())
-    .then(d => {
-      if(typeof d.value !== "number") return;
-      num.textContent = d.value.toLocaleString("ja-JP");
-      box.hidden = false;
-      try{ sessionStorage.setItem("norikun_music_seen", "1"); }catch(e){}
-    })
-    .catch(() => {});
-})();
+ 
 audio.addEventListener("playing", () => {
   setupMediaSession();          // iPhone対策：再生開始後にもう一度登録する
   if(npMsg.textContent.indexOf("再生できません") === 0 ||
@@ -1134,7 +1111,7 @@ seek.addEventListener("input", () => {
   const d = audio.duration || 0;
   audio.currentTime = (seek.value / 100) * d;
 });
-
+ 
 /* --- 波形 --- */
 const cvs = document.getElementById("wave");
 const ctx = cvs.getContext("2d");
@@ -1143,7 +1120,7 @@ const H = 48;           // 高さ(px)
 const N = 76;           // 曲線を作る点の数
 const level = new Float32Array(N);
 let analyser = null, data = null, phase = 0, audioCtx = null;
-
+ 
 /* 曲ごとの色。順番に切り替わり、曲を変えるとゆっくり移り変わる */
 const HUES = [205, 262, 312, 350, 25, 45, 150, 178];
 let hue = 205, hueTarget = 205;
@@ -1155,7 +1132,7 @@ function stepHue(){
 function col(shift, light, alpha){
   return `hsla(${(hue + shift + 360) % 360},62%,${light}%,${alpha})`;
 }
-
+ 
 /* 波形の横位置がどの周波数にあたるかの目盛り（キャンバス内の上側に描く） */
 let sampleRate = 44100;
 /* dense を付けたものは、画面が狭いときだけ隠す */
@@ -1184,7 +1161,7 @@ function drawScale(W){
   ctx.fillStyle = "rgba(20,34,48,0.5)";
   ctx.fillText("Hz", 1, 8);
   ctx.textAlign = "start";
-
+ 
   // 音の大きさの目盛り（左右の端に5本ずつ）
   const vBase = H - 1.5, vAmp = H - 16;
   ctx.strokeStyle = "rgba(20,34,48,0.30)";
@@ -1198,20 +1175,20 @@ function drawScale(W){
   }
   ctx.stroke();
 }
-
+ 
 /* 音を通す道すじ：
    音 → 低音 → 中音 → 中音2 → 高音 → 音量 → 目で見る装置 → スピーカー
    iPhoneではここを通すと画面を消したとき止まってしまうので、
    「ノーマル」のあいだは作らないでおく。 */
 let eq = null, eqGain = null;
-
+ 
 /* iPhoneに「これは音楽の再生です」と伝えておく。
    こうしておくと画面を消しても音が続く（iOS 16.4以降） */
 function claimPlayback(){
   try{ if(navigator.audioSession) navigator.audioSession.type = "playback"; }catch(e){}
 }
 claimPlayback();
-
+ 
 function startVisualizer(){
   if(analyser || calm) return;
   if(IS_IOS && smodeId === "normal") return;      // iPhoneは音を変えるときだけ
@@ -1239,7 +1216,7 @@ function startVisualizer(){
     ac.resume();
   }catch(e){ analyser = null; eq = null; eqGain = null; }
 }
-
+ 
 /* 選んだイコライザーに合わせて、つまみをゆっくり動かす（プツッと鳴らないように） */
 function applyEq(){
   if(!eq || !audioCtx) return;
@@ -1276,7 +1253,7 @@ document.addEventListener("visibilitychange", () => {
   if(audioCtx && audioCtx.state === "suspended") audioCtx.resume().then(back, back);
   else back();
 });
-
+ 
 /* 音の強さを取り、前の値へゆっくり寄せて滑らかにする */
 /* 測っておいたデータの読み取り */
 const WCHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_";
@@ -1285,7 +1262,7 @@ const FSCALE = 0.73;   // 横軸の右端をおよそ9kHzに切り詰める
 const WLUT = {};
 for(let i=0;i<WCHARS.length;i++) WLUT[WCHARS[i]] = i/63;
 const bandBuf = new Float32Array(BANDS);
-
+ 
 function bandsAt(file, time){
   const d = (typeof WAVEDATA !== "undefined") ? WAVEDATA[file] : null;
   if(!d) return null;
@@ -1301,7 +1278,7 @@ function bandsAt(file, time){
   }
   return bandBuf;
 }
-
+ 
 function sample(){
   const sounding = !audio.paused && current >= 0;
   const hasData  = analyser && sounding;
@@ -1333,7 +1310,7 @@ function sample(){
   }
   phase += 0.018;
 }
-
+ 
 /* 小さな星を描く */
 function starPath(cx, cy, outer, inner, turn){
   ctx.beginPath();
@@ -1349,7 +1326,7 @@ function star(cx, cy, outer, inner, turn){
   starPath(cx, cy, outer, inner, turn);
   ctx.fill();
 }
-
+ 
 /* 点列をなめらかな曲線としてつなぐ */
 function curve(pts, startNew){
   if(startNew) ctx.moveTo(pts[0].x, pts[0].y);
@@ -1361,14 +1338,14 @@ function curve(pts, startNew){
   }
   ctx.lineTo(pts[pts.length-1].x, pts[pts.length-1].y);
 }
-
+ 
 /* 点列をまっすぐな線でつなぐ（★と★のあいだは直線） */
 function polyline(pts, startNew){
   if(startNew) ctx.moveTo(pts[0].x, pts[0].y);
   else ctx.lineTo(pts[0].x, pts[0].y);
   for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x, pts[i].y);
 }
-
+ 
 /* 拍の検出・ピークの保持・残像のための状態 */
 const MARK_N = 20;                        // 縦線と★の数
 const INSET  = 6;                         // 両端をどれだけ内側に寄せるか
@@ -1378,7 +1355,7 @@ for(let k=0;k<MARK_N;k++){
   markX.push(pos/(N-1));
   markIdx.push(Math.round(pos));
 }
-
+ 
 /* --- イコライザー（音と見え方を4種類から選ぶ） --- */
 function bump(u, c, w){ return Math.exp(-((u-c)*(u-c)) / (2*w*w)); }
 const SMODES = {
@@ -1410,11 +1387,11 @@ const selBtn = document.getElementById("selBtn");
 const selList = document.getElementById("selList");
 selList.innerHTML = SLIST.map(id =>
   `<li role="option" data-k="${id}" aria-selected="false">${SICON[id]}<span>${SNAME[id]}</span>${TICK}</li>`).join("");
-
+ 
 const SKEY = "norikun_music_smode";
 let smode = SMODES.normal, smodeId = "normal";
 const sWeight = new Float32Array(N);
-
+ 
 function setSmode(id, quiet){
   if(!SMODES[id]) id = "normal";
   smode = SMODES[id]; smodeId = id;
@@ -1427,9 +1404,9 @@ function setSmode(id, quiet){
   if(!quiet && !calm) startVisualizer();
   applyEq();
 }
-
+ 
 bindMenu(selBtn, selList, id => setSmode(id));
-
+ 
 setSmode((()=>{ try{ return localStorage.getItem(SKEY) || "normal"; }catch(e){ return "normal"; } })(), true);
 const peaks = new Float32Array(N);
 const peakTrail = new Float32Array(N);   // 結晶が降りてきた跡
@@ -1438,7 +1415,7 @@ const trail = [];                 // 過去の形を数枚だけ覚えておく
 const ghosts = [];                // ★が通った跡（薄れながら消える）
 const lastGY = new Float32Array(MARK_N).fill(-999);
 let bassAvg = 0, flash = 0, cooldown = 0, frame = 0;
-
+ 
 function detectBeat(){
   let bass = 0;
   for(let i=0;i<8;i++) bass += level[i];
@@ -1451,7 +1428,7 @@ function detectBeat(){
   flash *= 0.90;
   if(flash < 0.01) flash = 0;
 }
-
+ 
 function pointsFrom(vs, W, base, amp){
   const top = [];
   for(let i=0;i<N;i++){
@@ -1469,27 +1446,27 @@ function polyFrom(vs, W, base, amp){
   pts.push({x:W, y: base - vs[N-1]*amp});
   return pts;
 }
-
+ 
 function draw(){
   const dpr = window.devicePixelRatio || 1;
   const W = cvs.clientWidth || 600;
   cvs.width = W*dpr; cvs.height = H*dpr;
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,W,H);
-
+ 
   sample();
   stepHue();
   detectBeat();
   frame++;
-
+ 
   drawScale(W);          // 目盛りは波の後ろに描く
-
+ 
   const base = H - 1.5;                                    // 下端が基準線
   const amp  = (H - 14) * (1 + 0.09*flash*smode.beat);     // キャンバスの高さいっぱいに使う
-
+ 
   // 音そのものを変えているときは、見た目の強調は控えめにする（二重に効かないように）
   const wq = analyser ? 0.45 : 1;
-
+ 
   const vs = new Float32Array(N);
   for(let i=0;i<N;i++){
     const edge = Math.sin((i/(N-1))*Math.PI);
@@ -1501,7 +1478,7 @@ function draw(){
     spark[i] *= 0.982;                             // だんだん薄れて消える
     peakTrail[i] = Math.max(peaks[i], peakTrail[i] - 0.0026);   // 少し遅れて消える
   }
-
+ 
   // 残像
   if(frame % 4 === 0){
     trail.unshift(Float32Array.from(vs));
@@ -1513,17 +1490,17 @@ function draw(){
     ctx.strokeStyle = col(12, 40, 0.19 - k*0.042);
     ctx.beginPath(); polyline(polyFrom(trail[k], W, base, amp), true); ctx.stroke();
   }
-
+ 
   const top = pointsFrom(vs, W, base, amp);
   const poly = polyFrom(vs, W, base, amp);
-
+ 
   // 基準線
   ctx.beginPath();
   ctx.moveTo(0, base + 1); ctx.lineTo(W, base + 1);
   ctx.strokeStyle = col(0, 45, 0.20);
   ctx.lineWidth = 1;
   ctx.stroke();
-
+ 
   // 内側の面
   const boost = 0.06*flash;
   const g = ctx.createLinearGradient(0,0,W,0);
@@ -1536,7 +1513,7 @@ function draw(){
   ctx.closePath();
   ctx.fillStyle = g;
   ctx.fill();
-
+ 
   // 細い縦線
   ctx.strokeStyle = "rgba(31,97,147,0.38)";
   ctx.lineWidth = 1;
@@ -1549,7 +1526,7 @@ function draw(){
     ctx.lineTo(x, base);
   }
   ctx.stroke();
-
+ 
   // 輪郭
   const gs = ctx.createLinearGradient(0,0,W,0);
   gs.addColorStop(0,   col(-30, 31, 0.92));
@@ -1565,7 +1542,7 @@ function draw(){
   ctx.lineJoin = "round";
   ctx.beginPath(); polyline(poly, true); ctx.stroke();
   ctx.restore();
-
+ 
   // 結晶が降りてきた軌跡（細かい点線で薄く残って消える）
   ctx.save();
   ctx.setLineDash([1, 2]);
@@ -1582,7 +1559,7 @@ function draw(){
   }
   ctx.stroke();
   ctx.restore();
-
+ 
   // ★が通った跡を貯める（動いたときだけ、その場に置いてくる）
   const lift = smode.lift * flash;                   // 拍の瞬間に一段跳ね上がる
   for(let k=0;k<MARK_N;k++){
@@ -1607,14 +1584,14 @@ function draw(){
     ctx.fillStyle = "#3E8CC6";
     star(o.x, o.y, s, s*0.4, 0);
   }
-
+ 
   // ピークの★（水色）
   for(let k=0;k<MARK_N;k++){
     const i = markIdx[k];
     if(peaks[i] < 0.02) continue;                   // 縦線すべてに出す
     const x = Math.round(markX[k]*W)+0.5;
     const sz = 3.2 + 3.4*peaks[i];                   // 高いほど大きい
-
+ 
     // いちばん高かった位置に残る残像（少し遅れて薄れて消える）
     const gap = peakTrail[i] - peaks[i], sp = spark[i];
     if(gap > 0.006 && sp > 0.02){
@@ -1628,19 +1605,38 @@ function draw(){
       starPath(x, base - peakTrail[i]*amp - lift, sz*0.95, sz*0.38, 0);
       ctx.stroke();
     }
-
+ 
     ctx.globalAlpha = 0.94;
     ctx.fillStyle = "#1E74B4";
     star(x, base - peaks[i]*amp - lift, sz, sz*0.4, 0);
   }
   ctx.globalAlpha = 1;
-
+ 
   if(!calm) requestAnimationFrame(draw);
 }
 draw();
 if(calm) addEventListener("resize", draw);
-
+ 
+/* --- お気に入りの数を出す（洋楽・邦楽・全体） --- */
+function updateFavCount(){
+  const el = document.getElementById("favCount");
+  if(!el) return;
+  const each = RANGES.map(r => {
+    let c = 0;
+    for(let i = r.start; i < r.start + r.len; i++) if(favs.has(FLAT[i].file)) c++;
+    return c;
+  });
+  const total = each.reduce((a, b) => a + b, 0);
+  if(!total){ el.hidden = true; return; }       // ひとつも無いときは出さない
+  el.innerHTML = FAV_ICON + "：" +
+    SECTIONS.map((sec, i) => `${sec.label} <b>${each[i]}</b>`).join(" ／ ") +
+    ` ／ 全体 <b>${total}</b>`;
+  el.hidden = false;
+}
+updateFavCount();
+ 
 syncTransport();
 </script>
 </body>
 </html>
+ 
