@@ -429,7 +429,7 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
       <p class="romaji">★NORIKUN-MUSIC-PLAZA★</p>
       <a class="support" href="https://ofuse.me/norikun7" target="_blank" rel="noopener">☕のりくんにひとこと＆投げ銭を送る</a>
     </div>
-    <p class="lede">生成AIのGoogle Flow Musicでいろいろ対話し、自分のイメージを伝え曲(歌詞)にしました。きれいなサウンドが好きです。洋楽や邦楽、ミュージックビデオ、TikTok動画に分けてアップしてます。ぜひ聴いてください。<strong>洋楽・邦楽の見出しを押すと曲が出てきます。</strong>曲名の上でタップ(クリック)すると上のプレイヤーで再生します。お気に入りの曲があればその右側にあるハートマークをタップ(クリック)してください。その「お気に入り」のみ再生する機能があります。また、イコライザー機能も追加しました💙</p>
+    <p class="lede">生成AIのGoogle Flow Musicでいろいろ対話し、自分のイメージを伝え曲(歌詞)にしました。きれいなサウンドが好きです。洋楽や邦楽、ミュージックビデオ、TikTokピックアップ動画に分けてアップしてます。ぜひ聴いてください。<strong>洋楽・邦楽の見出しを押すと曲が出てきます。</strong>曲名の上でタップ(クリック)すると上のプレイヤーで再生します。お気に入りの曲があればその右側にあるハートマークをタップ(クリック)してください。その「お気に入り」のみ再生する機能があります。また、イコライザー機能も追加しました💙</p>
     <p class="lede notice">お知らせ‼【こちらのサイトは来年2027年より有料版になります】</p>
     <p class="lede">こちらもよろしくお願いします。→<a href="https://www.flowmusic.app/Norikun" target="_blank" rel="noopener">のりくんの Flow Music ページ</a>へ</p>
   </header>
@@ -512,7 +512,7 @@ const VIDEOS = [
 ];
 
 /* ===================================================================
-   ★TikTok動画★  リポジトリ直下に置いた mp4 のファイル名
+   ★TikTokピックアップ動画★  リポジトリ直下に置いた mp4 のファイル名
    TikTokに投稿した縦型のショート動画をここにまとめます
    =================================================================== */
 const TIKTOKS = [
@@ -620,7 +620,7 @@ const STAR_COLORS = {
   s0: ["#6FE09B","#2FA556","#0D6635"],   // 洋楽：緑
   s1: ["#8FE0FA","#33A6DE","#0F5788"],   // 邦楽：スカイブルー
   sv: ["#FF95DA","#C455BE","#652795"],   // ミュージックビデオ：ピンク紫
-  st: ["#7BE8E0","#2AC1C9","#0C6A80"]    // TikTok動画：ターコイズ
+  st: ["#FFE98A","#FFB01F","#E06A00"]    // TikTokピックアップ動画：黄色→オレンジ
 };
 function starSVG(key){
   const c = STAR_COLORS[key];
@@ -800,8 +800,8 @@ videoEl.addEventListener("error", () => {
 });
 audio.addEventListener("play", () => videoEl.pause());
 
-/* --- TikTok動画。ミュージックビデオとは別の並びで、別のプレイヤーで動く --- */
-const ttPanel = makePanel("TikTok動画", "st", TIKTOKS.length + "本");
+/* --- TikTokピックアップ動画。ミュージックビデオとは別の並びで、別のプレイヤーで動く --- */
+const ttPanel = makePanel("TikTokピックアップ動画", "st", TIKTOKS.length + "本");
 
 const ttBox = document.createElement("div");
 ttBox.className = "videobox";
@@ -863,7 +863,7 @@ function buildTTQueue(keep){
   ttpos = 0;
 }
 function startTTChain(){
-  if(!TIKTOKS.length){ npMsg.textContent = "TikTok動画がありません。"; return; }
+  if(!TIKTOKS.length){ npMsg.textContent = "TikTokピックアップ動画がありません。"; return; }
   oneShot = false;
   queueSec = null; queue = []; qpos = 0;
   if(videoChain){ videoChain = false; videoEl.pause(); }
@@ -887,7 +887,7 @@ ttEl.addEventListener("ended", () => {
   }else{
     ttChain = false;
     updateModes();
-    npMsg.textContent = "TikTok動画を最後まで再生しました。";
+    npMsg.textContent = "TikTokピックアップ動画を最後まで再生しました。";
   }
 });
 ttEl.addEventListener("play", () => { audio.pause(); videoEl.pause(); });
@@ -1025,7 +1025,7 @@ const FAV_ICON  = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="tru
 const QITEMS = [{k:"all", name:"ALL（曲のみ・" + FLAT.length + "曲）"}]
   .concat(SECTIONS.map((s, i) => ({ k:String(i), name:s.label })))
   .concat([{ k:"video",  name:"ミュージックビデオALL（動画" + VIDEOS.length + "本）" },
-           { k:"tiktok", name:"TikTok動画ALL（動画" + TIKTOKS.length + "本）" },
+           { k:"tiktok", name:"TikTokピックアップALL（動画" + TIKTOKS.length + "本）" },
            { k:"one",    name:"1曲再生（連続再生しない）" }]);
 const WITEMS = [
   { k:"fav",     name:"お気に入り",   icon:FAV_ICON  },
