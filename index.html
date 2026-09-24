@@ -919,6 +919,7 @@ function load(i, autoplay){
   current = i;
   const t = FLAT[i];
   playToken++;
+  lastTime = 0; stuck = false; stallTicks = 0; autoTries = 0;   // 新しい曲なので、途切れた記録は消す
   audio.src = t.file;
   npTitle.innerHTML = t.title + (t.sub ? `<span class="sub">${t.sub}</span>` : "");
   npMsg.textContent = "";
@@ -933,14 +934,39 @@ function load(i, autoplay){
   if(autoplay) play();
 }
 let playToken = 0;   // 新しい再生が始まったら、古い再生の失敗は無視する
-function play(){
+
+/* --- 途切れたときの立て直し ---
+   通信が切れたりして音が止まると、そのままでは再生ボタンを押しても鳴らない。
+   その場合は音源を読み直して、止まった位置から続きを再生する。 */
+let lastTime = 0;      // 最後にちゃんと鳴っていた位置（秒）
+let stuck = false;     // 通信が途切れて止まっている
+let stallTicks = 0, autoTries = 0;
+function reloadAt(t){
+  if(current < 0) return;
+  stuck = false;
+  audio.src = FLAT[current].file;
+  audio.load();
+  if(t > 0){
+    audio.addEventListener("loadedmetadata", () => {
+      try{ audio.currentTime = t; }catch(e){}
+    }, { once:true });
+  }
+}
+function play(retried){
   startVisualizer();
+  if(audioCtx && audioCtx.state !== "running") audioCtx.resume().catch(()=>{});  // 止まった音の通り道も起こす
+  if(current >= 0 && (audio.error || stuck)) reloadAt(lastTime);
   const my = ++playToken;
   const pr = audio.play();
   if(!pr || !pr.catch) return;
   pr.catch(err => {
     if(my !== playToken) return;                       // すでに次の曲へ移っている
     if(err && err.name === "AbortError") return;       // 曲の切り替えによる中断
+    if(retried !== true && current >= 0 && !(err && err.name === "NotAllowedError")){
+      reloadAt(lastTime);                              // 1回だけ読み直してやり直す
+      play(true);
+      return;
+    }
     setTimeout(() => {                                 // 実際に鳴っていないか確かめてから出す
       if(my !== playToken) return;
       if(!audio.paused) return;
@@ -1361,14 +1387,42 @@ setPlayIcon();
 
 audio.addEventListener("playing", () => {
   setupMediaSession();          // iPhone対策：再生開始後にもう一度登録する
+  stuck = false; stallTicks = 0; autoTries = 0;
   if(npMsg.textContent.indexOf("再生できません") === 0 ||
+     npMsg.textContent.indexOf("通信が途切れ") === 0 ||
      npMsg.textContent.indexOf("音源ファイル") === 0) npMsg.textContent = "";
 });
 audio.addEventListener("error", () => {
   if(!audio.currentSrc) return;               // 読み込み前の空振りは無視
+  stuck = true;
+  const net = audio.error && audio.error.code === 2;   // 2 = 通信のエラー
+  if(net || lastTime > 0){
+    npMsg.textContent = "通信が途切れました。再生ボタンで続きから再生できます。";
+    return;
+  }
   if(!audio.paused) return;                   // 鳴っているなら出さない
   npMsg.textContent = "音源ファイルが見つかりません。ファイル名を確認してください。";
 });
+/* 鳴っていた位置を覚えておく */
+audio.addEventListener("timeupdate", () => {
+  if(!audio.seeking && audio.currentTime > 0) lastTime = audio.currentTime;
+});
+audio.addEventListener("seeked", () => { lastTime = audio.currentTime; });
+/* データが届かなくなったら「止まっている」印をつけ、届き始めたら外す */
+audio.addEventListener("stalled",  () => { if(current >= 0) stuck = true; });
+audio.addEventListener("progress", () => { if(!audio.error) stuck = false; });
+/* 再生中なのに位置が進まないまま約9秒たったら、自動で読み直す（3回まで） */
+let watchPrev = -1;
+setInterval(() => {
+  if(audio.paused || current < 0 || audio.seeking || audio.ended){ stallTicks = 0; watchPrev = -1; return; }
+  if(audio.currentTime === watchPrev) stallTicks++;
+  else { stallTicks = 0; watchPrev = audio.currentTime; }
+  if(stallTicks >= 3 && autoTries < 3){
+    stallTicks = 0; watchPrev = -1; autoTries++;
+    reloadAt(lastTime);
+    play(true);
+  }
+}, 3000);
 audio.addEventListener("timeupdate", () => {
   const d = audio.duration || 0;
   setSeekPos(d ? (audio.currentTime / d) * 100 : 0);
@@ -1932,12 +1986,52 @@ updateFavCount();
 
 syncTransport();
 </script>
-<!-- おすすめ音響グッズ（楽天・Amazonアフィリエイト） -->
+<!-- おすすめ音響グッズ・キャンペーン案内（楽天・Amazonアフィリエイト） -->
 <section class="gear-section">
-  <h2 class="gear-title">🎧 のりくんの曲をもっといい音で <span class="gear-pr">PR</span></h2>
+  <div class="gear-head">
+    <h2 class="gear-title">🎧 のりくんの曲をもっといい音で <span class="gear-pr">PR</span></h2>
+    <button class="gear-toggle" id="gearToggle" type="button" aria-expanded="true" aria-controls="gearBody"><span class="gt-label">広告をたたむ</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+  <div class="gear-body" id="gearBody">
+  <p class="gear-lead">ぜひ下記ご覧いただきまして、気に入りましたらご購入をご検討ください。</p>
+  <div class="camp-list" id="campList" hidden></div>
   <div class="gear-list">
     <div class="gear-card">
-      <div class="gear-icon">🎧</div>
+      <div class="gear-icon"><svg class="gear-svg" viewBox="-8 0 176 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="クリップ式のオープンイヤーイヤホンのイラスト">
+  <defs>
+    <linearGradient id="gbBar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1b1d22"/><stop offset=".45" stop-color="#4f545d"/><stop offset="1" stop-color="#15171b"/></linearGradient>
+    <radialGradient id="gbPod" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#5f656f"/><stop offset=".55" stop-color="#2a2d33"/><stop offset="1" stop-color="#121418"/></radialGradient>
+    <linearGradient id="gbBand" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#555b64"/><stop offset="1" stop-color="#1f2227"/></linearGradient>
+    <radialGradient id="gbBtn" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#7d838d"/><stop offset="1" stop-color="#34383e"/></radialGradient>
+  </defs>
+  <ellipse cx="80" cy="100" rx="58" ry="5" fill="#000" opacity=".12"/>
+  <g transform="translate(84 0) scale(-1 1)">
+  <g transform="translate(14 8) rotate(-8 36 46)">
+    <!-- 耳の縁をはさむ、しなやかなバンド -->
+    <path d="M40 22 C 66 26, 70 62, 44 72" fill="none" stroke="url(#gbBand)" stroke-width="9" stroke-linecap="round"/>
+    <!-- 耳の後ろ側に来る円筒（バッテリー部） -->
+    <rect x="28" y="6" width="17" height="34" rx="8.5" fill="url(#gbBar)" transform="rotate(-24 36 23)"/>
+    <ellipse cx="31" cy="12" rx="3" ry="6" fill="#fff" opacity=".2" transform="rotate(-24 31 12)"/>
+    <!-- 耳の前側に来る丸いスピーカー部 -->
+    <ellipse cx="34" cy="70" rx="20" ry="18" fill="url(#gbPod)"/>
+    <ellipse cx="32" cy="70" rx="10" ry="9" fill="url(#gbBtn)" stroke="#16181c" stroke-width="1.3"/>
+    <ellipse cx="26" cy="61" rx="6" ry="2.8" fill="#fff" opacity=".22" transform="rotate(-28 26 61)"/>
+  </g>
+  </g>
+  <g transform="translate(76 0)">
+  <g transform="translate(14 8) rotate(-8 36 46)">
+    <!-- 耳の縁をはさむ、しなやかなバンド -->
+    <path d="M40 22 C 66 26, 70 62, 44 72" fill="none" stroke="url(#gbBand)" stroke-width="9" stroke-linecap="round"/>
+    <!-- 耳の後ろ側に来る円筒（バッテリー部） -->
+    <rect x="28" y="6" width="17" height="34" rx="8.5" fill="url(#gbBar)" transform="rotate(-24 36 23)"/>
+    <ellipse cx="31" cy="12" rx="3" ry="6" fill="#fff" opacity=".2" transform="rotate(-24 31 12)"/>
+    <!-- 耳の前側に来る丸いスピーカー部 -->
+    <ellipse cx="34" cy="70" rx="20" ry="18" fill="url(#gbPod)"/>
+    <ellipse cx="32" cy="70" rx="10" ry="9" fill="url(#gbBtn)" stroke="#16181c" stroke-width="1.3"/>
+    <ellipse cx="26" cy="61" rx="6" ry="2.8" fill="#fff" opacity=".22" transform="rotate(-28 26 61)"/>
+  </g>
+  </g>
+</svg></div>
       <div class="gear-name">Bose Ultra Open Earbuds</div>
       <div class="gear-desc">耳をふさがないオープンイヤー型<br>周りの音も聞きながら音楽を楽しめる</div>
       <div class="gear-btns">
@@ -1946,7 +2040,33 @@ syncTransport();
       </div>
     </div>
     <div class="gear-card">
-      <div class="gear-icon">🔊</div>
+      <div class="gear-icon"><svg class="gear-svg" viewBox="0 0 170 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="円筒形のポータブルスピーカーのイラスト">
+  <defs>
+    <linearGradient id="gsBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d6fb8"/><stop offset=".35" stop-color="#2a5597"/><stop offset=".8" stop-color="#1c3d70"/><stop offset="1" stop-color="#15305a"/></linearGradient>
+    <pattern id="gsMesh" width="4" height="4" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".9" fill="#0f2448" opacity=".45"/></pattern>
+    <radialGradient id="gsCap" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#4a7fcc"/><stop offset="1" stop-color="#1a3a6c"/></radialGradient>
+    <radialGradient id="gsRad" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="#6f9ad8"/><stop offset=".6" stop-color="#2d5a9e"/><stop offset="1" stop-color="#173561"/></radialGradient>
+  </defs>
+  <ellipse cx="85" cy="98" rx="66" ry="6" fill="#000" opacity=".13"/>
+  <!-- ストラップ -->
+  <path d="M146 44 q 18 -2 16 16 q -2 14 -16 12" fill="none" stroke="#173561" stroke-width="5" stroke-linecap="round"/>
+  <!-- 胴体（ファブリック） -->
+  <rect x="22" y="22" width="124" height="68" rx="30" fill="url(#gsBody)"/>
+  <rect x="22" y="22" width="124" height="68" rx="30" fill="url(#gsMesh)"/>
+  <path d="M40 30 H128" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".18"/>
+  <!-- 上面のボタン -->
+  <g fill="#0f2448" opacity=".85">
+    <rect x="66" y="23" width="9" height="3.2" rx="1.6"/>
+    <rect x="80" y="23" width="9" height="3.2" rx="1.6"/>
+    <rect x="94" y="23" width="9" height="3.2" rx="1.6"/>
+  </g>
+  <!-- 両端のバンパーとパッシブラジエーター -->
+  <ellipse cx="26" cy="56" rx="14" ry="34" fill="url(#gsCap)"/>
+  <ellipse cx="26" cy="56" rx="10" ry="25" fill="url(#gsRad)" stroke="#0f2448" stroke-width="1.2"/>
+  <ellipse cx="26" cy="56" rx="4.5" ry="11" fill="none" stroke="#0f2448" stroke-width="1" opacity=".6"/>
+  <ellipse cx="22" cy="44" rx="2.5" ry="6" fill="#fff" opacity=".25"/>
+  <ellipse cx="142" cy="56" rx="7" ry="34" fill="url(#gsCap)"/>
+</svg></div>
       <div class="gear-name">JBL Flip 7</div>
       <div class="gear-desc">持ち運べるBluetoothスピーカー<br>お部屋でも外でも迫力のサウンド</div>
       <div class="gear-btns">
@@ -1955,23 +2075,124 @@ syncTransport();
       </div>
     </div>
   </div>
-  <p class="gear-note">Amazonのアソシエイトとして、のりくんは適格販売により収入を得ています。</p>
+  </div>
 </section>
 
 <style>
-.gear-section{max-width:720px;margin:40px auto;padding:0 16px;}
+.gear-section{max-width:720px;margin:48px auto 40px;padding:28px 16px 8px;position:relative;}
+/* 上の「made with ♥ by norikun」との仕切り */
+.gear-section::before{content:"";position:absolute;left:16px;right:16px;top:0;border-top:2px dashed rgba(30,116,180,.35);}
+.gear-section::after{content:"ここから広告";position:absolute;top:-.75em;left:50%;transform:translateX(-50%);font-size:.72rem;letter-spacing:.1em;color:#6d8aa6;background:var(--ink,#d6e7f7);padding:0 12px;}
+.gear-head{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.gear-head .gear-title{margin:0;}
+.gear-toggle{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:.8rem;font-weight:bold;color:#1E5E94;background:rgba(255,255,255,.6);border:1px solid #9dbcd8;border-radius:999px;padding:5px 14px;cursor:pointer;}
+.gear-toggle:hover{background:#fff;}
+.gear-toggle svg{width:14px;height:14px;transition:transform .2s;}
+.gear-toggle[aria-expanded="false"] svg{transform:rotate(180deg);}
+.gear-body[hidden]{display:none;}
+.gear-lead{text-align:center;font-size:.9rem;color:#556;margin:14px 0 18px;line-height:1.7;}
 .gear-title{font-size:1.2rem;text-align:center;}
 .gear-pr{font-size:.7rem;border:1px solid #999;border-radius:4px;padding:1px 6px;color:#999;vertical-align:middle;}
 .gear-list{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
 .gear-card{flex:1 1 240px;max-width:320px;border:1px solid #ddd;border-radius:12px;padding:20px;text-align:center;background:rgba(255,255,255,.05);}
 .gear-icon{font-size:2.5rem;}
+.gear-svg{display:block;width:150px;height:auto;margin:0 auto;}
 .gear-name{font-weight:bold;margin-top:8px;}
 .gear-desc{font-size:.85rem;color:#888;margin:4px 0 14px;}
 .gear-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
 .gear-btn{display:inline-block;background:#bf0000;color:#fff;text-decoration:none;padding:10px 18px;border-radius:999px;font-weight:bold;}
 .gear-btn.amazon{background:#FF9900;color:#111;}
 .gear-btn:hover{opacity:.85;}
-.gear-note{font-size:.75rem;color:#888;text-align:center;margin-top:14px;}
+.camp-list{display:flex;flex-direction:column;gap:10px;margin:0 auto 20px;max-width:656px;}
+.camp{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;border-radius:12px;padding:12px 14px;border:1px solid #ddd;background:rgba(255,255,255,.55);transition:transform .15s;}
+.camp:hover{transform:translateY(-1px);}
+.camp.rakuten{border-left:6px solid #bf0000;}
+.camp.amazon{border-left:6px solid #FF9900;}
+.camp-body{flex:1;min-width:0;}
+.camp-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-weight:bold;}
+.camp-shop{font-size:.7rem;color:#fff;border-radius:4px;padding:1px 6px;}
+.camp.rakuten .camp-shop{background:#bf0000;}
+.camp.amazon .camp-shop{background:#FF9900;color:#111;}
+.camp-when{font-size:.75rem;font-weight:bold;border-radius:999px;padding:1px 8px;background:#e8f1e4;color:#2c6b1f;}
+.camp-when.soon{background:#fff3dc;color:#8a5a00;}
+.camp-text{font-size:.82rem;color:#666;margin-top:3px;}
+.camp-go{flex:none;font-size:.82rem;font-weight:bold;white-space:nowrap;}
+.camp.rakuten .camp-go{color:#bf0000;}
+.camp.amazon .camp-go{color:#b36b00;}
 </style>
+<script>
+/* --- キャンペーン案内 ---
+   url にアフィリエイトのリンクを入れると表示されます（空のものは出ません）。
+   期間が終わると自動で消え、始まる前は「○/○から」と予告を出します。
+   日付は日本時間。新しいキャンペーンはこの一覧に足すだけでOK。 */
+const CAMPAIGNS = [
+  { shop:"amazon", name:"Amazonプライム感謝祭",
+    text:"先行セール10/13〜15、本セール10/16〜19。エントリーでポイントアップも",
+    showFrom:"2026-09-24", start:"2026-10-13", end:"2026-10-19",
+    url:"https://link.amazon/B0ffi8eyK" },
+  { shop:"rakuten", name:"楽天 ワンダフルデー",
+    text:"毎月1日は3,000円以上のお買い物でポイント3倍（エントリーが必要）",
+    showFrom:"2026-09-24", start:"2026-10-01", end:"2026-10-01",
+    url:"" },
+  { shop:"rakuten", name:"楽天 5と0のつく日",
+    text:"毎月5・10・15・20・25・30日は楽天カードでのお買い物がポイントアップ（エントリーが必要）",
+    days:[5,10,15,20,25,30],
+    url:"" }
+];
+/* 広告の開け閉め。閉じた状態はこのブラウザに覚えておく */
+(function(){
+  const btn = document.getElementById("gearToggle"), body = document.getElementById("gearBody");
+  if(!btn || !body) return;
+  const KEY = "norikun_gear_closed";
+  function set(open){
+    body.hidden = !open;
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    btn.querySelector(".gt-label").textContent = open ? "広告をたたむ" : "広告を開く";
+  }
+  let closed = false;
+  try{ closed = localStorage.getItem(KEY) === "1"; }catch(e){}
+  set(!closed);
+  btn.addEventListener("click", () => {
+    const open = body.hidden;
+    set(open);
+    try{ localStorage.setItem(KEY, open ? "0" : "1"); }catch(e){}
+  });
+})();
+(function(){
+  const box = document.getElementById("campList");
+  if(!box) return;
+  // 日本時間の「今日」を YYYY-MM-DD で出す
+  const jst = new Date(Date.now() + 9*3600*1000);
+  const today = jst.toISOString().slice(0,10);
+  const md = d => { const [, m, dd] = d.split("-"); return (+m) + "/" + (+dd); };
+  const html = [];
+  CAMPAIGNS.forEach(c => {
+    if(!c.url) return;
+    let when;
+    if(c.days){
+      const d = jst.getUTCDate();
+      if(c.days.includes(d)) when = { t:"今日が対象日", soon:false };
+      else {
+        const next = c.days.find(x => x > d);
+        when = { t: next ? "次は" + (jst.getUTCMonth()+1) + "/" + next : "次は来月5日", soon:true };
+      }
+    } else {
+      if(today < (c.showFrom || c.start) || today > c.end) return;   // 期間外は出さない
+      when = today >= c.start
+        ? { t: c.start === c.end ? "今日開催中" : "開催中（" + md(c.end) + "まで）", soon:false }
+        : { t: md(c.start) + (c.start === c.end ? "" : "〜" + md(c.end)), soon:true };
+    }
+    html.push(
+      '<a class="camp ' + c.shop + '" href="' + c.url + '" target="_blank" rel="nofollow sponsored noopener">' +
+        '<div class="camp-body"><div class="camp-top">' +
+          '<span class="camp-shop">' + (c.shop === "amazon" ? "Amazon" : "楽天") + '</span>' +
+          c.name + '<span class="camp-when' + (when.soon ? " soon" : "") + '">' + when.t + '</span>' +
+        '</div><div class="camp-text">' + c.text + '</div></div>' +
+        '<span class="camp-go">見に行く ›</span>' +
+      '</a>');
+  });
+  if(html.length){ box.innerHTML = html.join(""); box.hidden = false; }
+})();
+</script>
 </body>
 </html>
