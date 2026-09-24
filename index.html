@@ -1989,8 +1989,8 @@ syncTransport();
 <!-- おすすめ音響グッズ・キャンペーン案内（楽天・Amazonアフィリエイト） -->
 <section class="gear-section">
   <div class="gear-head">
-    <h2 class="gear-title">🎧 のりくんの曲をもっといい音で <span class="gear-pr">PR</span></h2>
     <button class="gear-toggle" id="gearToggle" type="button" aria-expanded="true" aria-controls="gearBody"><span class="gt-label">広告をたたむ</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <h2 class="gear-title">🎧 のりくんの曲をもっといい音で <span class="gear-pr">PR</span></h2>
   </div>
   <div class="gear-body" id="gearBody">
   <p class="gear-lead">ぜひ下記ご覧いただきまして、気に入りましたらご購入をご検討ください。</p>
@@ -2033,7 +2033,7 @@ syncTransport();
   </g>
 </svg></div>
       <div class="gear-name">Bose Ultra Open Earbuds</div>
-      <div class="gear-desc">耳をふさがないオープンイヤー型<br>周りの音も聞きながら音楽を楽しめる</div>
+      <div class="gear-desc"><span class="gear-catch"><mark>耳をふさがない</mark>オープンイヤー型</span>周りの音も聞きながら<br>音楽を楽しめる</div>
       <div class="gear-btns">
         <a class="gear-btn" href="https://a.r10.to/hgf9rr" target="_blank" rel="nofollow sponsored noopener">楽天で見る</a>
         <a class="gear-btn amazon" href="https://link.amazon/B04thQOKF" target="_blank" rel="nofollow sponsored noopener">Amazonで見る</a>
@@ -2068,7 +2068,7 @@ syncTransport();
   <ellipse cx="142" cy="56" rx="7" ry="34" fill="url(#gsCap)"/>
 </svg></div>
       <div class="gear-name">JBL Flip 7</div>
-      <div class="gear-desc">持ち運べるBluetoothスピーカー<br>お部屋でも外でも迫力のサウンド</div>
+      <div class="gear-desc"><span class="gear-catch"><mark>持ち運べる</mark>Bluetoothスピーカー</span>お部屋でも外でも<br>迫力のサウンド</div>
       <div class="gear-btns">
         <a class="gear-btn" href="https://a.r10.to/hgd9ld" target="_blank" rel="nofollow sponsored noopener">楽天で見る</a>
         <a class="gear-btn amazon" href="https://link.amazon/B08Gl7udU" target="_blank" rel="nofollow sponsored noopener">Amazonで見る</a>
@@ -2097,8 +2097,10 @@ syncTransport();
 .gear-card{flex:1 1 240px;max-width:320px;border:1px solid #ddd;border-radius:12px;padding:20px;text-align:center;background:rgba(255,255,255,.05);}
 .gear-icon{font-size:2.5rem;}
 .gear-svg{display:block;width:150px;height:auto;margin:0 auto;}
-.gear-name{font-weight:bold;margin-top:8px;}
-.gear-desc{font-size:.85rem;color:#888;margin:4px 0 14px;}
+.gear-name{font-weight:bold;font-size:1.2rem;margin-top:10px;color:#12324f;letter-spacing:.02em;}
+.gear-desc{font-size:.9rem;color:#3b4f63;margin:8px 0 16px;line-height:1.7;}
+.gear-catch{display:block;font-size:1rem;font-weight:bold;color:#1E5E94;margin-bottom:4px;}
+.gear-catch mark{background:linear-gradient(transparent 58%,#ffe38a 58%);color:inherit;padding:0 2px;}
 .gear-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
 .gear-btn{display:inline-block;background:#bf0000;color:#fff;text-decoration:none;padding:10px 18px;border-radius:999px;font-weight:bold;}
 .gear-btn.amazon{background:#FF9900;color:#111;}
@@ -2133,11 +2135,11 @@ const CAMPAIGNS = [
   { shop:"rakuten", name:"楽天 ワンダフルデー",
     text:"毎月1日は3,000円以上のお買い物でポイント3倍（エントリーが必要）",
     showFrom:"2026-09-24", start:"2026-10-01", end:"2026-10-01",
-    url:"" },
+    url:"https://a.r10.to/hYFkFQ" },
   { shop:"rakuten", name:"楽天 5と0のつく日",
-    text:"毎月5・10・15・20・25・30日は楽天カードでのお買い物がポイントアップ（エントリーが必要）",
+    text:"毎月5・10・15・20・25・30日は楽天カードでのお買い物がポイント4倍（エントリーが必要）",
     days:[5,10,15,20,25,30],
-    url:"" }
+    url:"https://a.r10.to/hkNBP7" }
 ];
 /* 広告の開け閉め。閉じた状態はこのブラウザに覚えておく */
 (function(){
