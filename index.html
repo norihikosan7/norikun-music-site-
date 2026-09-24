@@ -1990,9 +1990,9 @@ syncTransport();
 <section class="gear-section">
   <div class="gear-head">
     <button class="gear-toggle" id="gearToggle" type="button" aria-expanded="true" aria-controls="gearBody"><span class="gt-label">広告をたたむ</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <h2 class="gear-title">🎧 のりくんの曲をもっといい音で <span class="gear-pr">PR</span></h2>
   </div>
   <div class="gear-body" id="gearBody">
+  <h2 class="gear-title">🎧 のりくんの曲をもっといい音で <span class="gear-pr">PR</span></h2>
   <p class="gear-lead">ぜひ下記ご覧いただきまして、気に入りましたらご購入をご検討ください。</p>
   <div class="camp-list" id="campList" hidden></div>
   <div class="gear-list">
@@ -2032,7 +2032,7 @@ syncTransport();
   </g>
   </g>
 </svg></div>
-      <div class="gear-name">Bose Ultra Open Earbuds</div>
+      <div class="gear-name"><span class="gear-label">商品名:</span>【Bose Ultra Open Earbuds】</div>
       <div class="gear-desc"><span class="gear-catch"><mark>耳をふさがない</mark>オープンイヤー型</span>周りの音も聞きながら<br>音楽を楽しめる</div>
       <div class="gear-btns">
         <a class="gear-btn" href="https://a.r10.to/hgf9rr" target="_blank" rel="nofollow sponsored noopener">楽天で見る</a>
@@ -2067,7 +2067,7 @@ syncTransport();
   <ellipse cx="22" cy="44" rx="2.5" ry="6" fill="#fff" opacity=".25"/>
   <ellipse cx="142" cy="56" rx="7" ry="34" fill="url(#gsCap)"/>
 </svg></div>
-      <div class="gear-name">JBL Flip 7</div>
+      <div class="gear-name"><span class="gear-label">商品名:</span>【JBL Flip 7】</div>
       <div class="gear-desc"><span class="gear-catch"><mark>持ち運べる</mark>Bluetoothスピーカー</span>お部屋でも外でも<br>迫力のサウンド</div>
       <div class="gear-btns">
         <a class="gear-btn" href="https://a.r10.to/hgd9ld" target="_blank" rel="nofollow sponsored noopener">楽天で見る</a>
@@ -2076,6 +2076,7 @@ syncTransport();
     </div>
   </div>
   </div>
+  <p class="gear-note">のりくんは「楽天市場のアフィリエイト」及び「Amazonのアソシエイト」として収入を得ています。</p>
 </section>
 
 <style>
@@ -2083,6 +2084,9 @@ syncTransport();
 /* 上の「made with ♥ by norikun」との仕切り */
 .gear-section::before{content:"";position:absolute;left:16px;right:16px;top:0;border-top:2px dashed rgba(30,116,180,.35);}
 .gear-section::after{content:"ここから広告";position:absolute;top:-.75em;left:50%;transform:translateX(-50%);font-size:.72rem;letter-spacing:.1em;color:#6d8aa6;background:var(--ink,#d6e7f7);padding:0 12px;}
+.gear-label{display:block;font-size:.72rem;font-weight:bold;color:#6d8aa6;letter-spacing:.08em;}
+.gear-note{font-size:.7rem;color:#7a8b9c;text-align:center;margin:18px 0 0;}
+.gear-body .gear-title{margin:14px 0 0;}
 .gear-head{display:flex;flex-direction:column;align-items:center;gap:8px;}
 .gear-head .gear-title{margin:0;}
 .gear-toggle{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:.8rem;font-weight:bold;color:#1E5E94;background:rgba(255,255,255,.6);border:1px solid #9dbcd8;border-radius:999px;padding:5px 14px;cursor:pointer;}
@@ -2121,6 +2125,27 @@ syncTransport();
 .camp-go{flex:none;font-size:.82rem;font-weight:bold;white-space:nowrap;}
 .camp.rakuten .camp-go{color:#bf0000;}
 .camp.amazon .camp-go{color:#b36b00;}
+
+/* --- 文字色を音楽ページと同じ色に統一 --- */
+.gear-section{color:var(--paper);font-family:var(--gothic);}
+/* 白い実線を、上に影の線を重ねて「くぼんだ溝」に見せる */
+.gear-section::before{height:0;border-top:1px solid rgba(22,83,127,.32);border-bottom:2px solid #fff;box-shadow:0 -1px 0 rgba(22,83,127,.08);}
+.gear-section::after{content:"≪ここから広告≫";color:var(--blue-deep);font-weight:bold;font-size:.8rem;letter-spacing:.08em;top:-.7em;}
+.gear-title{font-family:"Zen Maru Gothic",sans-serif;font-weight:900;color:var(--blue);letter-spacing:.06em;}
+.gear-lead{color:var(--paper);font-weight:500;}
+.gear-toggle{color:var(--blue);border-color:var(--line);}
+.gear-card{border-color:var(--line);}
+.gear-label{color:var(--blue-deep);}
+.gear-name{color:var(--paper);font-family:var(--mincho);font-weight:700;}
+.gear-catch{color:var(--blue);}
+.gear-desc{color:var(--mist);}
+.gear-note{color:var(--mist);}
+.camp{border-color:var(--line);}
+.camp-top{color:var(--paper);}
+.camp-text{color:var(--mist);}
+.camp.rakuten .camp-go,.camp.amazon .camp-go{color:var(--blue);}
+.camp-when{background:rgba(22,83,127,.1);color:var(--blue);}
+.camp-when.soon{background:rgba(47,95,134,.1);color:var(--blue-deep);}
 </style>
 <script>
 /* --- キャンペーン案内 ---
@@ -2128,10 +2153,6 @@ syncTransport();
    期間が終わると自動で消え、始まる前は「○/○から」と予告を出します。
    日付は日本時間。新しいキャンペーンはこの一覧に足すだけでOK。 */
 const CAMPAIGNS = [
-  { shop:"amazon", name:"Amazonプライム感謝祭",
-    text:"先行セール10/13〜15、本セール10/16〜19。エントリーでポイントアップも",
-    showFrom:"2026-09-24", start:"2026-10-13", end:"2026-10-19",
-    url:"https://link.amazon/B0ffi8eyK" },
   { shop:"rakuten", name:"楽天 ワンダフルデー",
     text:"毎月1日は3,000円以上のお買い物でポイント3倍（エントリーが必要）",
     showFrom:"2026-09-24", start:"2026-10-01", end:"2026-10-01",
@@ -2139,7 +2160,11 @@ const CAMPAIGNS = [
   { shop:"rakuten", name:"楽天 5と0のつく日",
     text:"毎月5・10・15・20・25・30日は楽天カードでのお買い物がポイント4倍（エントリーが必要）",
     days:[5,10,15,20,25,30],
-    url:"https://a.r10.to/hkNBP7" }
+    url:"https://a.r10.to/hkNBP7" },
+  { shop:"amazon", name:"Amazonプライム感謝祭",
+    text:"先行セール10/13〜15、本セール10/16〜19。エントリーでポイントアップも",
+    showFrom:"2026-09-24", start:"2026-10-13", end:"2026-10-19",
+    url:"https://link.amazon/B0ffi8eyK" }
 ];
 /* 広告の開け閉め。閉じた状態はこのブラウザに覚えておく */
 (function(){
