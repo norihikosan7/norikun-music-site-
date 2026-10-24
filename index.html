@@ -906,7 +906,7 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
       <a href="https://store.line.me/stickershop/author/6249492/ja" target="_blank" rel="noopener">のりくんのLINEスタンプ</a>
     </nav>
     <p class="by">made with <span class="heart">♥</span> by norikun</p>
-    <p class="ver">版 2026.10.24-r</p>
+    <p class="ver">版 2026.10.24-s</p>
   </footer>
 </div>
 
@@ -3962,10 +3962,17 @@ const CAMPAIGNS = [
 
   if(!unlocked) return;                  // ふつうの人には、これまでどおりのサイトのまま
 
+  /* 保存の欄は「アプリとして開いたとき」だけ出す。
+     ブラウザのタブで開いているときは、合いことばが入っていても出さない。
+     （アプリかどうかは、いちばん上の下ごしらえで html に appmode を付けて見分けている）
+     ただし仕組みそのもの（サービスワーカー）は、タブでも今までどおり用意しておく。
+     ここで止めてしまうと、ブラウザが「アプリとして入れる」を出さなくなることがある。 */
+  const asApp = document.documentElement.classList.contains("appmode");
+
   const CAN = ("serviceWorker" in navigator) && ("caches" in window) &&
               location.protocol !== "file:";
   if(!CAN) return;                       // 使えない環境ではパネルを出さない
-  box.hidden = false;
+  if(asApp) box.hidden = false;
 
   const MEDIA = "norikun-media-v1";
   const head = document.getElementById("offHead");
