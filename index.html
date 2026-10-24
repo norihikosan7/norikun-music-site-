@@ -906,7 +906,7 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
       <a href="https://store.line.me/stickershop/author/6249492/ja" target="_blank" rel="noopener">のりくんのLINEスタンプ</a>
     </nav>
     <p class="by">made with <span class="heart">♥</span> by norikun</p>
-    <p class="ver">版 2026.10.24-s</p>
+    <p class="ver">版 2026.10.24-t</p>
   </footer>
 </div>
 
@@ -3972,7 +3972,16 @@ const CAMPAIGNS = [
   const CAN = ("serviceWorker" in navigator) && ("caches" in window) &&
               location.protocol !== "file:";
   if(!CAN) return;                       // 使えない環境ではパネルを出さない
-  if(asApp) box.hidden = false;
+
+  if(!asApp){
+    /* ブラウザのタブで見ているときは、欄ごと画面から取り除く。
+       隠すだけにしておくと、何かの拍子に出てしまうことがあるため。
+       仕組み（サービスワーカー）だけは、今までどおり用意しておく。 */
+    box.remove();
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+    return;
+  }
+  box.hidden = false;
 
   const MEDIA = "norikun-media-v1";
   const head = document.getElementById("offHead");
