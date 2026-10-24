@@ -163,6 +163,8 @@ h1 .heart{
 .lede a{color:var(--blue);font-size:16px}
 .lede strong{font-weight:800;color:var(--blue)}
 .notice{color:var(--notice);font-weight:700}
+/* 本文に添える小さな但し書き（背景色の案内など） */
+.lede.aside{font-size:13.5px;color:var(--mist);margin-top:-5px}
 
 /* ---------- プレイヤー ---------- */
 .player{
@@ -383,6 +385,8 @@ input[type=range]:focus-visible{outline:1px solid var(--blue);outline-offset:3px
   font-variant-numeric:tabular-nums;white-space:nowrap;
 }
 .favcount svg{width:14px;height:14px;flex:0 0 auto;fill:#D2405F}
+.favcount .fgold svg{fill:#C8960B;margin-right:1px}
+.favcount .fgold b{color:#A97C06}
 .favcount b{font-size:13.5px;font-weight:800;color:var(--blue);margin-left:3px}
 .favcount .fcc{margin-right:2px}
 .favcount .fcs{margin:0 3px;color:var(--mist2);font-weight:600}
@@ -436,6 +440,8 @@ input[type=range]:focus-visible{outline:1px solid var(--blue);outline-offset:3px
 .sel-list li:hover,.sel-list li.hot{background:var(--soft);color:var(--blue)}
 .sel-list li[aria-selected="true"]{background:var(--blue);color:var(--ink)}
 .wicons{display:inline-flex;align-items:center;gap:6px}
+/* 「連続再生：邦楽♥」の♥を、最上級のときだけ金にする */
+.qgold{color:#C8960B;text-shadow:0 0 2px rgba(224,176,32,.7)}
 .sel-list .tick{margin-left:auto;opacity:0;transition:opacity .12s}
 .sel-list li[aria-selected="true"] .tick{opacity:1}
 @media(max-width:400px){
@@ -586,10 +592,31 @@ body.noscroll{overflow:hidden}
   color:var(--favoff);transition:color .15s,transform .15s;
 }
 .fav svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
-.fav[aria-pressed="true"]{color:#D2405F}
-.fav[aria-pressed="true"] svg{fill:currentColor}
+.fav[data-st="fav"]{color:#D2405F}
+.fav[data-st="fav"] svg{fill:currentColor}
+/* 最上級のお気に入り＝金のハート。黄色に寄りすぎないよう、少し赤みのある金にして
+   まわりにうっすら光を置き、赤のハートと並んでも金に見えるようにする。 */
+.fav[data-st="top"]{color:#C8960B}
+.fav[data-st="top"] svg{
+  fill:currentColor;stroke:#A97C06;stroke-width:1.4;
+  filter:drop-shadow(0 0 2px rgba(224,176,32,.85)) drop-shadow(0 1px 0 rgba(255,236,170,.9));
+}
 .fav:hover{color:#D2405F;transform:translateY(-50%) scale(1.12)}
+.fav[data-st="top"]:hover{color:#C8960B}
 .fav:focus-visible{outline:1px solid var(--blue);outline-offset:2px}
+/* ハートを押したときに、いまどの状態になったかを一瞬だけ出す */
+.htoast{
+  position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  transform:translateX(-50%) translateY(6px);
+  background:rgba(23,47,74,.93);color:#fff;border-radius:999px;
+  padding:7px 16px;font-size:13.5px;font-weight:700;letter-spacing:.02em;
+  box-shadow:0 4px 14px rgba(0,0,0,.25);
+  opacity:0;pointer-events:none;z-index:90;transition:opacity .18s,transform .18s;
+}
+.htoast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.htoast .hm{margin-right:6px}
+.htoast .hm.gold{color:#F0C53C}
+.htoast .hm.red{color:#FF7E96}
 .track{
   transition:padding .15s;
   width:100%;display:grid;
@@ -672,6 +699,8 @@ li.on .t-sub,li.on .t-time{color:var(--blue-deep);font-weight:600}
 .off-btn:hover:not(:disabled){background:var(--blue-deep);color:var(--ink)}
 .off-btn:disabled{opacity:.45;cursor:default}
 .off-del{border-color:var(--mist2);color:var(--mist)}
+.off-top{border-color:#C8960B;color:#A97C06}
+.off-top:hover:not(:disabled){background:#C8960B;color:#fff}
 .off-del:hover:not(:disabled){background:var(--mist2);color:var(--ink)}
 .off-bar{margin:12px 0 0;height:7px;border-radius:4px;background:var(--track);overflow:hidden}
 .off-bar span{display:block;height:100%;width:0;background:var(--blue);transition:width .2s}
@@ -764,8 +793,9 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
       <p class="romaji">★NORIKUN-MUSIC-PLAZA★</p>
       <a class="support" href="https://ofuse.me/norikun7" target="_blank" rel="noopener">☕のりくんにひとこと＆投げ銭を送る</a>
     </div>
-    <p class="lede">生成AIのGoogle Flow Musicでいろいろ対話し、自分のイメージを伝え曲(歌詞)にしました。きれいなサウンドが好きです。洋楽や邦楽、ミュージックビデオ、TikTokピックアップ動画に分けてアップしてます。ぜひ聴いてください。<strong>洋楽・邦楽の見出しを押すと曲が出てきます。</strong>曲名の上でタップ(クリック)すると上のプレイヤーで再生します。お気に入りの曲があればその右側にあるハートマークをタップ(クリック)してください。その「お気に入り」のみ再生する機能があります。また、イコライザー機能も追加しました💙</p>
-    <p class="lede notice">お知らせ‼【こちらのサイトは来年2027年より有料版になります】</p>
+    <p class="lede">生成AIのGoogle Flow Musicで対話し、イメージを伝え曲(歌詞)にしてます。きれいなサウンドが好きです。洋楽や邦楽、New Music(曲のみ)、ミュージックビデオ、TikTokピックアップ動画に分けてます。聴いてください。直接曲のタイトルをタップ(クリック)を押しても再生できます。お気に入りの曲があればその右側にあるハートマークをタップ(クリック)してください。<strong>もう一度押すとハートが金色になり、「最上級のお気に入り」になります。</strong>「お気に入り」だけ、「最上級」だけ、と分けて再生する機能があります。また、スポーツ等(ジョギング)でも曲名が分るように再生前にタイトルを読み上げる(男性・女性)機能を追加しました💙</p>
+    <p class="lede aside">(※背景色は青色と桃色の2パターン選べます(配色をタップ(クリック)願います))</p>
+    <p class="lede notice">お知らせ‼【こちらのサイトは来年2027年より有料版を検討中です(未定)】</p>
     <p class="lede">こちらもよろしくお願いします。→<a href="https://www.flowmusic.app/Norikun" target="_blank" rel="noopener">のりくんの Flow Music ページ</a>へ</p>
   </header>
 </div>
@@ -857,6 +887,7 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
         ホーム画面のアイコンから開けば、アプリのように使えます。</p>
       <div class="off-btns">
         <button type="button" class="off-btn" id="offFav">♥ お気に入りだけ保存</button>
+        <button type="button" class="off-btn off-top" id="offTop">♥ 最上級だけ保存</button>
         <button type="button" class="off-btn" id="offAll">すべての曲を保存</button>
         <button type="button" class="off-btn off-del" id="offClear">保存を消す</button>
       </div>
@@ -875,7 +906,7 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
       <a href="https://store.line.me/stickershop/author/6249492/ja" target="_blank" rel="noopener">のりくんのLINEスタンプ</a>
     </nav>
     <p class="by">made with <span class="heart">♥</span> by norikun</p>
-    <p class="ver">版 2026.10.24-n</p>
+    <p class="ver">版 2026.10.24-r</p>
   </footer>
 </div>
 
@@ -1169,6 +1200,37 @@ function saveFavs(){
 }
 const HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.2 12.5a4.8 4.8 0 0 1 6.8-6.8l1 1 1-1a4.8 4.8 0 0 1 6.8 6.8z"/></svg>';
 
+/* --- 最上級のお気に入り（金のハート） ---
+   ハートは押すたびに「なし → 赤 → 金 → なし」と変わる。
+   金は赤の一段上なので、「お気に入り」で流すときは赤と金の両方が入る。 */
+const TOP_KEY = "norikun_music_tops";
+let tops = new Set();
+try{ tops = new Set(JSON.parse(localStorage.getItem(TOP_KEY) || "[]")); }catch(e){}
+function saveTops(){
+  try{ localStorage.setItem(TOP_KEY, JSON.stringify([...tops])); }catch(e){}
+}
+/* 赤でも金でも「お気に入り」として扱う */
+function isFav(f){ return favs.has(f) || tops.has(f); }
+function favState(f){ return tops.has(f) ? "top" : favs.has(f) ? "fav" : "off"; }
+
+/* 押したときに、いまどうなったかを一瞬だけ知らせる（押しすぎて消してしまうのを防ぐ） */
+let htoastEl = null, htoastTimer = 0;
+function heartToast(st){
+  if(!htoastEl){
+    htoastEl = document.createElement("div");
+    htoastEl.className = "htoast";
+    htoastEl.setAttribute("role", "status");
+    document.body.appendChild(htoastEl);
+  }
+  htoastEl.innerHTML =
+      st === "fav" ? '<span class="hm red">♥</span>お気に入り'
+    : st === "top" ? '<span class="hm gold">♥</span>最上級のお気に入り'
+    :                '<span class="hm">♡</span>はずしました';
+  htoastEl.classList.add("on");
+  clearTimeout(htoastTimer);
+  htoastTimer = setTimeout(() => htoastEl.classList.remove("on"), 1100);
+}
+
 /* --- リストを組み立てる --- */
 const FLAT = [];
 const ROWS = [];
@@ -1248,14 +1310,24 @@ SECTIONS.forEach((sec, si) => {
     const fav = document.createElement("button");
     fav.className = "fav";
     fav.innerHTML = HEART;
-    const on = favs.has(t.file);
-    fav.setAttribute("aria-pressed", on ? "true" : "false");
-    fav.setAttribute("aria-label", "お気に入り");
-    fav.title = "お気に入り";
+    const LBL = { off:"お気に入り", fav:"お気に入り（もう一度押すと最上級）", top:"最上級のお気に入り" };
+    function paintFav(){
+      const st = favState(t.file);
+      fav.dataset.st = st;
+      fav.setAttribute("aria-pressed", st === "off" ? "false" : "true");
+      fav.setAttribute("aria-label", LBL[st]);
+      fav.title = LBL[st];
+    }
+    paintFav();
     fav.addEventListener("click", () => {
-      if(favs.has(t.file)) favs.delete(t.file); else favs.add(t.file);
-      fav.setAttribute("aria-pressed", favs.has(t.file) ? "true" : "false");
-      saveFavs();
+      /* なし → 赤 → 金 → なし */
+      const st = favState(t.file);
+      if(st === "off"){ favs.add(t.file); }
+      else if(st === "fav"){ favs.delete(t.file); tops.add(t.file); }
+      else { tops.delete(t.file); }
+      saveFavs(); saveTops();
+      paintFav();
+      heartToast(favState(t.file));
       updateFavCount();
     });
     li.appendChild(fav);
@@ -1801,6 +1873,7 @@ const wBtn = document.getElementById("wBtn"), wList = document.getElementById("w
 const SHUF_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>';
 const LOOP_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>';
 const FAV_ICON  = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 20.3 4.2 12.5a4.8 4.8 0 0 1 6.8-6.8l1 1 1-1a4.8 4.8 0 0 1 6.8 6.8z"/></svg>';
+const TOP_ICON  = '<svg viewBox="0 0 24 24" fill="#C8960B" stroke="#A97C06" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.3 4.2 12.5a4.8 4.8 0 0 1 6.8-6.8l1 1 1-1a4.8 4.8 0 0 1 6.8 6.8z"/></svg>';
 
 const QITEMS = [{k:"all", name:"ALL（曲のみ・" + FLAT.length + "曲）"}]
   .concat(SECTIONS.map((s, i) => ({ k:String(i), name:s.label })))
@@ -1809,6 +1882,7 @@ const QITEMS = [{k:"all", name:"ALL（曲のみ・" + FLAT.length + "曲）"}]
            { k:"one",    name:"1曲再生（連続再生しない）" }]);
 const WITEMS = [
   { k:"fav",     name:"お気に入り",   icon:FAV_ICON  },
+  { k:"top",     name:"最上級だけ",   icon:TOP_ICON  },
   { k:"shuffle", name:"ランダム",     icon:SHUF_ICON },
   { k:"loop",    name:"繰り返し",   icon:LOOP_ICON }
 ];
@@ -1819,7 +1893,7 @@ wList.innerHTML = WITEMS.map(it =>
 
 let queueSec = null, queue = [], qpos = 0, oneShot = false, videoChain = false;
 let videoQueue = [], vqpos = 0;
-let shuffleOn = false, loopOn = false, favOnly = false;
+let shuffleOn = false, loopOn = false, favOnly = false, topOnly = false;
 
 function shuffled(a){
   const b = a.slice();
@@ -1838,14 +1912,17 @@ function indicesOf(key){
     if(!r) return out;
     for(let i=r.start;i<r.start+r.len;i++) out.push(i);
   }
-  if(favOnly) out = out.filter(i => favs.has(FLAT[i].file));
+  if(topOnly)      out = out.filter(i => tops.has(FLAT[i].file));
+  else if(favOnly) out = out.filter(i => isFav(FLAT[i].file));
   return out;
 }
 function labelOf(key){
   const base = key === "all" ? "全曲" : SECTIONS[key].label;
-  return favOnly ? base + "のお気に入り" : base;
+  return topOnly ? base + "の最上級" : favOnly ? base + "のお気に入り" : base;
 }
 const NOFAV = "お気に入りがまだありません。曲名の右のハートを押して選んでください。";
+const NOTOP = "最上級のお気に入りがまだありません。ハートをもう一度押すと金になります。";
+function noneMsg(){ return topOnly ? NOTOP : favOnly ? NOFAV : "再生できる曲がありません。"; }
 
 function updateModes(){
   const cur = videoChain ? "video"
@@ -1860,11 +1937,12 @@ function updateModes(){
              : cur === "one" ? "1曲再生"
              : cur === "video" ? '<span class="pre">連続再生：</span>動画'
              : cur === "tiktok" ? '<span class="pre">連続再生：</span>TikTok'
-             : '<span class="pre">連続再生：</span>' + shortName + (favOnly ? "♥" : "");
+             : '<span class="pre">連続再生：</span>' + shortName
+               + (topOnly ? '<span class="qgold">♥</span>' : favOnly ? "♥" : "");
   qBtn.innerHTML = `<span>${name}</span>` + SCHEV;
   qBtn.classList.toggle("active", cur !== null);
 
-  const on = { fav:favOnly, shuffle:shuffleOn, loop:loopOn };
+  const on = { fav:favOnly, top:topOnly, shuffle:shuffleOn, loop:loopOn };
   [...wList.children].forEach(li =>
     li.setAttribute("aria-selected", on[li.dataset.k] ? "true" : "false"));
   // 選んでいるものはマークで並べる（文字より短く収まる）
@@ -1886,7 +1964,7 @@ function startSection(key){
   if(videoChain){ videoChain = false; videoEl.pause(); }
   if(typeof ttChain !== "undefined" && ttChain){ ttChain = false; ttEl.pause(); }
   const all = indicesOf(key);
-  if(!all.length){ npMsg.textContent = favOnly ? NOFAV : "再生できる曲がありません。"; return; }
+  if(!all.length){ npMsg.textContent = noneMsg(); return; }
   queueSec = key;
   queue = shuffleOn ? shuffled(all) : all;
   qpos = 0;
@@ -1896,7 +1974,7 @@ function startSection(key){
 /* 並べ直し。今かかっている曲はそのまま続ける */
 function rebuildQueue(){
   const all = indicesOf(queueSec);
-  if(!all.length){ npMsg.textContent = favOnly ? NOFAV : "再生できる曲がありません。"; clearQueue(); return; }
+  if(!all.length){ npMsg.textContent = noneMsg(); clearQueue(); return; }
   if(all.indexOf(current) >= 0){
     const rest = all.filter(i => i !== current);
     queue = [current].concat(shuffleOn ? shuffled(rest) : rest);
@@ -2154,8 +2232,14 @@ bindMenu(wBtn, wList, k => {
     applyLoop();
   }else if(k === "fav"){
     favOnly = !favOnly;
+    if(favOnly) topOnly = false;            // 「お気に入り」には金も入るので、両方は選べない
     if(queueSec !== null) rebuildQueue();
     else if(favOnly) startSection("all");   // 何も流れていなければ、お気に入りを流しはじめる
+  }else if(k === "top"){
+    topOnly = !topOnly;
+    if(topOnly) favOnly = false;
+    if(queueSec !== null) rebuildQueue();
+    else if(topOnly) startSection("all");   // 何も流れていなければ、最上級を流しはじめる
   }
   updateModes();
 }, true);
@@ -3107,10 +3191,11 @@ function updateFavCount(){
   if(!el) return;
   const each = RANGES.map(r => {
     let c = 0;
-    for(let i = r.start; i < r.start + r.len; i++) if(favs.has(FLAT[i].file)) c++;
+    for(let i = r.start; i < r.start + r.len; i++) if(isFav(FLAT[i].file)) c++;
     return c;
   });
   const total = each.reduce((a, b) => a + b, 0);
+  const topTotal = FLAT.reduce((n, t) => n + (tops.has(t.file) ? 1 : 0), 0);
   /* スマホでは1行に収めたいので、短い呼び名に切り替える（洋楽→洋 など） */
   const cell = (name, n, sh) =>
     `<span class="fci"><span class="fl">${name}</span>` +
@@ -3124,6 +3209,8 @@ function updateFavCount(){
     SECTIONS.map((sec, i) => cell(sec.label, each[i], sec.label.slice(0, 1)))
       .join('<span class="fcs">/</span>') +
     '<span class="fcs">/</span>' + cell("ハート数", total, "計") +
+    (topTotal ? '<span class="fcs">/</span><span class="fci fgold">' + TOP_ICON +
+                '<b>' + topTotal + '</b></span>' : "") +
     '<span class="fcs">/</span>' + cell("曲全体", FLAT.length, "全");
   el.hidden = false;
 }
@@ -3888,9 +3975,10 @@ const CAMPAIGNS = [
   const bar  = document.getElementById("offBar");
   const fill = document.getElementById("offFill");
   const bFav = document.getElementById("offFav");
+  const bTop = document.getElementById("offTop");
   const bAll = document.getElementById("offAll");
   const bDel = document.getElementById("offClear");
-  const btns = [bFav, bAll, bDel];
+  const btns = [bFav, bTop, bAll, bDel];
   let saved = new Set();                 // 控えてあるファイル名
   let busy  = false;
 
@@ -3903,7 +3991,8 @@ const CAMPAIGNS = [
     return [[t.file], cv === bare ? [cv] : [cv, bare]];
   }
   function allTracks(){ return FLAT.slice(); }
-  function favTracks(){ return FLAT.filter(t => favs.has(t.file)); }
+  function favTracks(){ return FLAT.filter(t => isFav(t.file)); }
+  function topTracks(){ return FLAT.filter(t => tops.has(t.file)); }
 
   navigator.serviceWorker.register("sw.js").then(refresh).catch(()=>{ box.hidden = true; });
 
@@ -3990,6 +4079,7 @@ const CAMPAIGNS = [
   }
 
   bFav.addEventListener("click", () => store(favTracks(), "お気に入りを保存中"));
+  bTop.addEventListener("click", () => store(topTracks(), "最上級のお気に入りを保存中"));
   bAll.addEventListener("click", () => {
     if(!confirm("すべての曲を保存します。260MBほど使います。よろしいですか？")) return;
     store(allTracks(), "保存中");
