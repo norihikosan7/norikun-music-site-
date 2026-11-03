@@ -906,7 +906,7 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
       <a href="https://store.line.me/stickershop/author/6249492/ja" target="_blank" rel="noopener">のりくんのLINEスタンプ</a>
     </nav>
     <p class="by">made with <span class="heart">♥</span> by norikun</p>
-    <p class="ver">版 2026.11.03-a</p>
+    <p class="ver">版 2026.11.03-b</p>
   </footer>
 </div>
 
@@ -1416,19 +1416,24 @@ function playVideo(n, auto){
 
 /* 連続再生が「ミュージックビデオ」のとき。曲と同じで、ランダム・繰り返しが効く */
 videoEl.addEventListener("ended", () => {
-  if(loopOn && vCurrent >= 0){                  // 同じ動画を繰り返す（曲と同じ扱い）
-    videoEl.currentTime = 0;
-    startMedia(videoEl);
+  if(videoChain){
+    if(vqpos < videoQueue.length - 1){
+      vqpos++;
+      playVideo(videoQueue[vqpos], true);
+    }else if(loopOn && videoQueue.length){      // ひとまわりしたら、また先頭から
+      if(shuffleOn) videoQueue = shuffled(videoQueue);
+      vqpos = 0;
+      playVideo(videoQueue[0], true);
+    }else{                                      // 最後まで来たら止める
+      videoChain = false;
+      updateModes();
+      npMsg.textContent = "ミュージックビデオを最後まで再生しました。";
+    }
     return;
   }
-  if(!videoChain) return;
-  if(vqpos < videoQueue.length - 1){
-    vqpos++;
-    playVideo(videoQueue[vqpos], true);
-  }else{                                        // 最後まで来たら止める
-    videoChain = false;
-    updateModes();
-    npMsg.textContent = "ミュージックビデオを最後まで再生しました。";
+  if(loopOn && vCurrent >= 0){                  // 1本だけのときは、その動画を繰り返す
+    videoEl.currentTime = 0;
+    startMedia(videoEl);
   }
 });
 videoEl.addEventListener("play", () => { audio.pause(); if(typeof ttEl !== "undefined") ttEl.pause(); });
@@ -1547,19 +1552,24 @@ function startTTChain(){
   if(keep < 0) playTT(ttQueue[0]);
 }
 ttEl.addEventListener("ended", () => {
-  if(loopOn && ttCurrent >= 0){
-    ttEl.currentTime = 0;
-    ttEl.play().catch(()=>{});
+  if(ttChain){
+    if(ttpos < ttQueue.length - 1){
+      ttpos++;
+      playTT(ttQueue[ttpos], true);
+    }else if(loopOn && ttQueue.length){         // ひとまわりしたら、また先頭から
+      if(shuffleOn) ttQueue = shuffled(ttQueue);
+      ttpos = 0;
+      playTT(ttQueue[0], true);
+    }else{
+      ttChain = false;
+      updateModes();
+      npMsg.textContent = "TikTokピックアップ動画を最後まで再生しました。";
+    }
     return;
   }
-  if(!ttChain) return;
-  if(ttpos < ttQueue.length - 1){
-    ttpos++;
-    playTT(ttQueue[ttpos], true);
-  }else{
-    ttChain = false;
-    updateModes();
-    npMsg.textContent = "TikTokピックアップ動画を最後まで再生しました。";
+  if(loopOn && ttCurrent >= 0){                 // 1本だけのときは、その動画を繰り返す
+    ttEl.currentTime = 0;
+    ttEl.play().catch(()=>{});
   }
 });
 ttEl.addEventListener("play", () => { audio.pause(); videoEl.pause(); });
@@ -1964,6 +1974,8 @@ function updateModes(){
       : '<span class="pre">再生方法：</span><span class="wicons">' + picked.map(it => it.icon).join("") + "</span>")
     + SCHEV;
   wBtn.classList.toggle("active", picked.length > 0);
+  /* 連続再生の有無が変わると、繰り返しの意味（1曲 ⇄ ひとまわり）も変わる */
+  if(typeof applyLoop === "function") applyLoop();
   if(typeof updateVState === "function") updateVState();
   if(typeof updateTTState === "function") updateTTState();
 }
@@ -2538,25 +2550,40 @@ audio.addEventListener("timeupdate", () => {
 /* 繰り返しは、ブラウザ自身の繰り返し機能（loop）に任せる。
    曲の終わりで自分で play() し直すやり方だと、スマホの画面が消えているときに
    「画面を触っていない再生」とみなされて断られ、そこで止まってしまうため。 */
+/* いま「連続再生」で並びを流しているかどうか。
+   並びを流しているときの繰り返しは、同じ曲ではなく「ひとまわり」を繰り返す。 */
+function chainActive(){
+  if(queueSec !== null) return true;
+  if(typeof videoChain !== "undefined" && videoChain) return true;
+  if(typeof ttChain    !== "undefined" && ttChain)    return true;
+  return false;
+}
 function applyLoop(){
-  audio.loop = loopOn;
-  if(typeof videoEl !== "undefined") videoEl.loop = loopOn;
-  if(typeof ttEl    !== "undefined") ttEl.loop    = loopOn;
+  /* 1つだけを繰り返すのは、並びを流していないときだけ。
+     並びを流しているときは、終わりまで来たら先頭に戻す（下の ended で面倒をみる）。 */
+  const one = loopOn && !chainActive();
+  if(typeof audio   !== "undefined") audio.loop   = one;
+  if(typeof videoEl !== "undefined") videoEl.loop = one;
+  if(typeof ttEl    !== "undefined") ttEl.loop    = one;
 }
 audio.addEventListener("ended", () => {
   lastTime = 0;                      // 終わりの位置を覚えたままにしない
+  if(queueSec !== null){
+    if(qpos < queue.length - 1){ qpos++; load(queue[qpos], true); return; }
+    if(loopOn && queue.length){                 // ひとまわりしたら、また先頭から
+      if(shuffleOn) queue = shuffled(queue);    // ランダムのときは並べ直す
+      qpos = 0;
+      load(queue[0], true);
+      return;
+    }
+    const label = labelOf(queueSec);
+    clearQueue();
+    npMsg.textContent = label + "を最後まで再生しました。";
+    return;
+  }
   if(loopOn && current >= 0){        // 念のための保険（loop が効いていれば ここへは来ない）
     audio.currentTime = 0;
     play();
-    return;
-  }
-  if(queueSec !== null){
-    if(qpos < queue.length - 1){ qpos++; load(queue[qpos], true); }
-    else {
-      const label = labelOf(queueSec);
-      clearQueue();
-      npMsg.textContent = label + "を最後まで再生しました。";
-    }
     return;
   }
   if(oneShot) return;                       // 1曲再生のときは次へ進まない
