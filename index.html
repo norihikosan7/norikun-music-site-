@@ -644,7 +644,11 @@ body.noscroll{overflow:hidden}
 .track:focus-visible{outline:1px solid var(--blue);outline-offset:2px}
 .t-no{font-family:var(--mincho);color:var(--blue-deep);font-size:15px;font-variant-numeric:tabular-nums}
 .t-title{font-family:var(--mincho);font-size:19px;font-weight:600;letter-spacing:.03em;transition:color .15s}
-.t-sub{font-family:var(--gothic);font-size:12px;color:var(--mist);font-weight:400;margin-left:.5em}
+/* 副題は、曲名の横に収まらないときは「副題ごと」次の行へ落とす。
+   inline-block にするとひとかたまりとして扱われるので、途中で切れない。
+   副題だけで1行に収まらないほど長いときは、そのときだけ中で折り返す。 */
+.t-sub{font-family:var(--gothic);font-size:12px;color:var(--mist);font-weight:400;margin-left:.5em;
+  display:inline-block;vertical-align:baseline}
 .t-time{font-variant-numeric:tabular-nums;color:var(--mist);font-size:13px}
 li.on{background:var(--rowon);box-shadow:inset 3px 0 0 var(--blue)}
 li.on .track{padding-left:12px}
@@ -906,7 +910,7 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
       <a href="https://store.line.me/stickershop/author/6249492/ja" target="_blank" rel="noopener">のりくんのLINEスタンプ</a>
     </nav>
     <p class="by">made with <span class="heart">♥</span> by norikun</p>
-    <p class="ver">版 2026.11.04-a</p>
+    <p class="ver">版 2026.11.05-b</p>
   </footer>
 </div>
 
@@ -1126,7 +1130,8 @@ const SECTIONS = [
       { title:"紅蓮の神", sub:"凍てつく寒さを焼き祓え", file:"guren-no-kami.mp3",        time:"2:43", tags:"" },
       { title:"恋のリズム", sub:"囁きながら",      file:"koi-no-rhythm.mp3",             time:"2:38", tags:"" },
       { title:"Anamnesis", sub:"振り向いてごらん", file:"anamnesis.mp3",                 time:"2:58", tags:"" },
-      { title:"木の葉時雨", sub:"Leaves Like Rain", file:"konoha-shigure.mp3",           time:"3:00", tags:"" }
+      { title:"木の葉時雨", sub:"Leaves Like Rain", file:"konoha-shigure.mp3",           time:"3:00", tags:"" },
+      { title:"Our Genesis", sub:"私たちの始まり(家族)", file:"our-genesis.mp3",         time:"2:59", tags:"" }
     ]
   },
   {
