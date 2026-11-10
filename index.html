@@ -910,7 +910,7 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
       <a href="https://store.line.me/stickershop/author/6249492/ja" target="_blank" rel="noopener">のりくんのLINEスタンプ</a>
     </nav>
     <p class="by">made with <span class="heart">♥</span> by norikun</p>
-    <p class="ver">版 2026.11.10-d</p>
+    <p class="ver">版 2026.11.10-f</p>
   </footer>
 </div>
 
@@ -1135,7 +1135,8 @@ const SECTIONS = [
       { title:"Torchlight Descent & Fireworks", sub:"松明と花火がゲレンデを灯す", file:"torchlight-descent.mp3", time:"3:02", tags:"" },
       { title:"Windborne Meridian", sub:"風に運ばれて", file:"windborne.mp3",            time:"2:58", tags:"" },
       { title:"Limerence", sub:"心を寄せて",     file:"limerence.mp3",                   time:"2:48", tags:"" },
-      { title:"Seeker's Light", sub:"～見つからない探し物～", file:"seekers-light.mp3",  time:"2:57", tags:"" }
+      { title:"Seeker's Light", sub:"～見つからない探し物～", file:"seekers-light.mp3",  time:"2:57", tags:"" },
+      { title:"Whispers in the Snowwood", sub:"～シマエナガのさえずり～", file:"whispers-in-the-snowwood.mp3", time:"3:01", tags:"" }
     ]
   },
   {
@@ -1355,6 +1356,8 @@ SECTIONS.forEach((sec, si) => {
       paintFav();
       heartToast(favState(t.file));
       updateFavCount();
+      /* 絞り込み中なら、その場で一覧も合わせる */
+      if(typeof applyListFilter === "function") applyListFilter();
     });
     li.appendChild(fav);
     ul.appendChild(li);
@@ -1990,6 +1993,8 @@ function updateModes(){
   wBtn.classList.toggle("active", picked.length > 0);
   /* 連続再生の有無が変わると、繰り返しの意味（1曲 ⇄ ひとまわり）も変わる */
   if(typeof applyLoop === "function") applyLoop();
+  /* お気に入り・最上級の選び方が変わったら、下の一覧も同じ範囲にそろえる */
+  if(typeof applyListFilter === "function") applyListFilter();
   if(typeof updateVState === "function") updateVState();
   if(typeof updateTTState === "function") updateTTState();
 }
@@ -2564,6 +2569,31 @@ audio.addEventListener("timeupdate", () => {
 /* 繰り返しは、ブラウザ自身の繰り返し機能（loop）に任せる。
    曲の終わりで自分で play() し直すやり方だと、スマホの画面が消えているときに
    「画面を触っていない再生」とみなされて断られ、そこで止まってしまうため。 */
+/* 「お気に入り」「最上級だけ」を選んでいるときは、下の曲の一覧も同じ範囲にそろえる。
+   流れている曲と、画面に並んでいる曲が食い違わないようにするため。
+   対象は曲の3つの欄だけ。ミュージックビデオと TikTok にはハートが無いのでそのまま。 */
+function inFilter(file){
+  if(topOnly) return tops.has(file);
+  if(favOnly) return isFav(file);
+  return true;
+}
+function applyListFilter(){
+  if(typeof ROWS === "undefined" || !ROWS.length) return;
+  const on = favOnly || topOnly;
+  ROWS.forEach((li, i) => { li.hidden = on && !inFilter(FLAT[i].file); });
+  RANGES.forEach(r => {
+    let n = 0;
+    for(let i = r.start; i < r.start + r.len; i++) if(!on || inFilter(FLAT[i].file)) n++;
+    const c = r.panel.toggle.querySelector(".count");
+    if(c) c.textContent = n + "曲";
+    /* 1曲も無くなった欄は、見出しごと引っ込める */
+    const empty = on && n === 0;
+    const head = r.panel.toggle.closest(".sec-head");
+    if(head) head.hidden = empty;
+    r.panel.body.hidden = empty;
+  });
+}
+
 /* いま「連続再生」で並びを流しているかどうか。
    並びを流しているときの繰り返しは、同じ曲ではなく「ひとまわり」を繰り返す。 */
 function chainActive(){
