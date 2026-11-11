@@ -864,6 +864,10 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
     </div>
     <div class="modes">
       <div class="sel">
+        <button type="button" class="mbtn mode sel-btn" id="dBtn" aria-haspopup="listbox" aria-expanded="false"></button>
+        <ul class="sel-list" id="dList" role="listbox" aria-label="曲の表示" hidden></ul>
+      </div>
+      <div class="sel">
         <button type="button" class="mbtn mode sel-btn" id="qBtn" aria-haspopup="listbox" aria-expanded="false"></button>
         <ul class="sel-list" id="qList" role="listbox" aria-label="連続再生" hidden></ul>
       </div>
@@ -910,7 +914,7 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
       <a href="https://store.line.me/stickershop/author/6249492/ja" target="_blank" rel="noopener">のりくんのLINEスタンプ</a>
     </nav>
     <p class="by">made with <span class="heart">♥</span> by norikun</p>
-    <p class="ver">版 2026.11.10-f</p>
+    <p class="ver">版 2026.11.11-b</p>
   </footer>
 </div>
 
@@ -1908,6 +1912,7 @@ const nextBtn  = document.getElementById("nextBtn");
 const stopBtn  = document.getElementById("stopBtn");
 const qBtn = document.getElementById("qBtn"), qList = document.getElementById("qList");
 const wBtn = document.getElementById("wBtn"), wList = document.getElementById("wList");
+const dBtn = document.getElementById("dBtn"), dList = document.getElementById("dList");
 
 const SHUF_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>';
 const LOOP_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>';
@@ -1925,14 +1930,27 @@ const WITEMS = [
   { k:"shuffle", name:"ランダム",     icon:SHUF_ICON },
   { k:"loop",    name:"繰り返し",   icon:LOOP_ICON }
 ];
+/* 曲の一覧に何を出すか。再生とは別に、見え方だけを決める */
+const LIST_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>';
+/* 曲の表示のハートは、赤ではなくピンク。再生方法のハートと見分けるため */
+const PINK_ICON = '<svg viewBox="0 0 24 24" fill="#FF7E96" stroke="#E8536F" stroke-width="1.1" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.3 4.2 12.5a4.8 4.8 0 0 1 6.8-6.8l1 1 1-1a4.8 4.8 0 0 1 6.8 6.8z"/></svg>';
+const DITEMS = [
+  { k:"all", name:"すべて",       icon:LIST_ICON },
+  { k:"fav", name:"お気に入り",   icon:PINK_ICON },
+  { k:"top", name:"最上級だけ",   icon:TOP_ICON  }
+];
+
 qList.innerHTML = QITEMS.map(it =>
   `<li role="option" data-k="${it.k}" aria-selected="false"><span>${it.name}</span>${TICK}</li>`).join("");
 wList.innerHTML = WITEMS.map(it =>
+  `<li role="option" data-k="${it.k}" aria-selected="false">${it.icon}<span>${it.name}</span>${TICK}</li>`).join("");
+dList.innerHTML = DITEMS.map(it =>
   `<li role="option" data-k="${it.k}" aria-selected="false">${it.icon}<span>${it.name}</span>${TICK}</li>`).join("");
 
 let queueSec = null, queue = [], qpos = 0, oneShot = false, videoChain = false;
 let videoQueue = [], vqpos = 0;
 let shuffleOn = false, loopOn = false, favOnly = false, topOnly = false;
+let showMode = "all";                 // すべて / お気に入り / 最上級だけ
 
 function shuffled(a){
   const b = a.slice();
@@ -1991,6 +2009,19 @@ function updateModes(){
       : '<span class="pre">再生方法：</span><span class="wicons">' + picked.map(it => it.icon).join("") + "</span>")
     + SCHEV;
   wBtn.classList.toggle("active", picked.length > 0);
+
+  /* 曲の表示 */
+  [...dList.children].forEach(li =>
+    li.setAttribute("aria-selected", li.dataset.k === showMode ? "true" : "false"));
+  const dIt = DITEMS.find(it => it.k === showMode) || DITEMS[0];
+  /* 「曲の」はスマホでは省く。それでも「表示：」は残すので、
+     再生方法のハートと見分けがつく。 */
+  dBtn.innerHTML = (showMode === "all"
+      ? '<span><span class="pre">曲の</span>表示</span>'
+      : '<span><span class="pre">曲の</span>表示：</span><span class="wicons">' + dIt.icon + "</span>")
+    + SCHEV;
+  dBtn.classList.toggle("active", showMode !== "all");
+
   /* 連続再生の有無が変わると、繰り返しの意味（1曲 ⇄ ひとまわり）も変わる */
   if(typeof applyLoop === "function") applyLoop();
   /* お気に入り・最上級の選び方が変わったら、下の一覧も同じ範囲にそろえる */
@@ -2276,16 +2307,23 @@ bindMenu(wBtn, wList, k => {
   }else if(k === "fav"){
     favOnly = !favOnly;
     if(favOnly) topOnly = false;            // 「お気に入り」には金も入るので、両方は選べない
+    showMode = favOnly ? "fav" : "all";     // 一覧の見え方もそろえる
     if(queueSec !== null) rebuildQueue();
     else if(favOnly) startSection("all");   // 何も流れていなければ、お気に入りを流しはじめる
   }else if(k === "top"){
     topOnly = !topOnly;
     if(topOnly) favOnly = false;
+    showMode = topOnly ? "top" : "all";
     if(queueSec !== null) rebuildQueue();
     else if(topOnly) startSection("all");   // 何も流れていなければ、最上級を流しはじめる
   }
   updateModes();
 }, true);
+/* 曲の表示。再生には手を出さず、一覧の見え方だけを変える */
+bindMenu(dBtn, dList, k => {
+  showMode = k;
+  updateModes();
+});
 updateModes();
 
 /* 前後の曲へ。連続再生中はその並びの中で、そうでなければ全曲の並びで動く */
@@ -2569,17 +2607,17 @@ audio.addEventListener("timeupdate", () => {
 /* 繰り返しは、ブラウザ自身の繰り返し機能（loop）に任せる。
    曲の終わりで自分で play() し直すやり方だと、スマホの画面が消えているときに
    「画面を触っていない再生」とみなされて断られ、そこで止まってしまうため。 */
-/* 「お気に入り」「最上級だけ」を選んでいるときは、下の曲の一覧も同じ範囲にそろえる。
-   流れている曲と、画面に並んでいる曲が食い違わないようにするため。
+/* 「曲の表示」で選んだ範囲だけを、下の一覧に出す。
+   再生方法で「お気に入り」「最上級だけ」を選んだときは、一覧もそれに合わせる。
    対象は曲の3つの欄だけ。ミュージックビデオと TikTok にはハートが無いのでそのまま。 */
 function inFilter(file){
-  if(topOnly) return tops.has(file);
-  if(favOnly) return isFav(file);
+  if(showMode === "top") return tops.has(file);
+  if(showMode === "fav") return isFav(file);
   return true;
 }
 function applyListFilter(){
   if(typeof ROWS === "undefined" || !ROWS.length) return;
-  const on = favOnly || topOnly;
+  const on = showMode !== "all";
   ROWS.forEach((li, i) => { li.hidden = on && !inFilter(FLAT[i].file); });
   RANGES.forEach(r => {
     let n = 0;
