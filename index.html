@@ -914,7 +914,7 @@ footer a:hover,footer a:focus-visible{color:var(--blue);border-bottom-color:var(
       <a href="https://store.line.me/stickershop/author/6249492/ja" target="_blank" rel="noopener">のりくんのLINEスタンプ</a>
     </nav>
     <p class="by">made with <span class="heart">♥</span> by norikun</p>
-    <p class="ver">版 2026.11.21-a</p>
+    <p class="ver">版 2026.11.21-c</p>
   </footer>
 </div>
 
@@ -4054,6 +4054,10 @@ syncTransport();
    期間が終わると自動で消え、始まる前は「○/○から」と予告を出します。
    日付は日本時間。新しいキャンペーンはこの一覧に足すだけでOK。 */
 const CAMPAIGNS = [
+  { shop:"rakuten", name:"楽天ブラックフライデー",
+    text:"エントリー＆5,000円以上のお買い物でポイント3倍。買いまわりなどと合わせて最大31.5倍",
+    showFrom:"2026-11-14", start:"2026-11-19", end:"2026-11-24",
+    url:"https://books.rakuten.co.jp/event/game/pokemon/?scid=wi_bks_cmp_game_pokemon2026_02" },
   { shop:"rakuten", name:"楽天 ワンダフルデー",
     text:"毎月1日は3,000円以上のお買い物でポイント3倍（エントリーが必要）",
     showFrom:"2026-09-24", start:"2026-10-01", end:"2026-10-01",
@@ -4062,6 +4066,10 @@ const CAMPAIGNS = [
     text:"毎月5・10・15・20・25・30日は楽天カードでのお買い物がポイント4倍（エントリーが必要）",
     days:[5,10,15,20,25,30],
     url:"https://a.r10.to/hkNBP7" },
+  { shop:"amazon", name:"Amazonブラックフライデー",
+    text:"先行セール11/27〜、本セール11/30〜12/7。ポイントアップキャンペーン対象",
+    showFrom:"2026-11-21", start:"2026-11-27", end:"2026-12-07",
+    url:"https://link.amazon/B0gx6ipNf" },
   { shop:"amazon", name:"Amazonプライム感謝祭",
     text:"先行セール10/13〜15、本セール10/16〜19。エントリーでポイントアップも",
     showFrom:"2026-09-24", start:"2026-10-13", end:"2026-10-19",
